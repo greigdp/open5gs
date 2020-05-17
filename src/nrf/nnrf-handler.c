@@ -242,20 +242,13 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     OpenAPI_search_result_t *SearchResult = NULL;
     OpenAPI_lnode_t *node = NULL;
 
-    ogs_uuid_t uuid;
-    char id[OGS_UUID_FORMATTED_LENGTH + 1];
-
     ogs_assert(session);
     ogs_assert(recvmsg);
-
-    ogs_uuid_get(&uuid);
-    ogs_uuid_format(id, &uuid);
 
     SearchResult = ogs_calloc(1, sizeof(*SearchResult));
     ogs_assert(SearchResult);
 
     SearchResult->validity_period = 100;
-    SearchResult->search_id = id;
 
     SearchResult->nf_instances = OpenAPI_list_create();
     ogs_assert(SearchResult->nf_instances);
@@ -267,6 +260,10 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
 
         OpenAPI_list_add(SearchResult->nf_instances, NFProfile);
     }
+
+#if 0 /* limit */
+    SearchResult->num_nf_inst_complete = SearchResult->nf_instances->count;
+#endif
 
     memset(&sendmsg, 0, sizeof(sendmsg));
     sendmsg.SearchResult = SearchResult;
