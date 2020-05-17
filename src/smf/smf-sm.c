@@ -422,6 +422,7 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
         case SMF_TIMER_SBI_REGISTRATION:
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
+        case SMF_TIMER_NF_INSTANCE_VALIDITY:
             nf_instance = e->sbi.data;
             ogs_assert(nf_instance);
             ogs_assert(OGS_FSM_STATE(&nf_instance->sm));

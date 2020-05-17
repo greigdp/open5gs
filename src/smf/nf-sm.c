@@ -69,7 +69,7 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
             smf_timer_nf_instance_heartbeat, nf_instance);
     ogs_assert(nf_instance->t_heartbeat);
     nf_instance->t_validity = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_validity, nf_instance);
+            smf_timer_nf_instance_validity, nf_instance);
     ogs_assert(nf_instance->t_validity);
 
     if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
@@ -205,7 +205,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
         client = nf_instance->client;
         ogs_assert(client);
         if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
-            ogs_info("NF registered [%s]", ogs_sbi_self()->nf_instance_id);
+            ogs_info("NF registered [%s]", nf_instance->id);
 
             if (nf_instance->time.heartbeat) {
                 ogs_timer_start(nf_instance->t_heartbeat_interval,
@@ -222,7 +222,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
 
     case OGS_FSM_EXIT_SIG:
         if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
-            ogs_info("NF de-registered [%s]", ogs_sbi_self()->nf_instance_id);
+            ogs_info("NF de-registered [%s]", nf_instance->id);
 
             if (nf_instance->time.heartbeat) {
                 ogs_timer_stop(nf_instance->t_heartbeat_interval);
@@ -278,6 +278,65 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
             break;
 
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
+            OGS_FSM_TRAN(s, &smf_nf_state_will_register);
+            break;
+
+        case SMF_TIMER_NF_INSTANCE_VALIDITY:
+            if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
+                ogs_info("NF expired [%s]", nf_instance->id);
+                OGS_FSM_TRAN(s, &smf_nf_state_de_registered);
+            }
+            break;
+
+        default:
+            ogs_error("Unknown timer[%s:%d]",
+                    smf_timer_get_name(e->timer_id), e->timer_id);
+            break;
+        }
+        break;
+
+    default:
+        ogs_error("Unknown event %s", smf_event_get_name(e));
+        break;
+    }
+}
+
+void smf_nf_state_de_registered(ogs_fsm_t *s, smf_event_t *e)
+{
+    char buf[OGS_ADDRSTRLEN];
+
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+    ogs_sbi_client_t *client = NULL;
+    ogs_sockaddr_t *addr = NULL;
+    ogs_assert(s);
+    ogs_assert(e);
+
+    smf_sm_debug(e);
+
+    nf_instance = e->sbi.data;
+    ogs_assert(nf_instance);
+
+    switch (e->id) {
+    case OGS_FSM_ENTRY_SIG:
+        ogs_timer_start(nf_instance->t_registration,
+                smf_timer_cfg(SMF_TIMER_SBI_REGISTRATION)->duration);
+        break;
+
+    case OGS_FSM_EXIT_SIG:
+        ogs_timer_stop(nf_instance->t_registration);
+        break;
+
+    case SMF_EVT_SBI_TIMER:
+        switch(e->timer_id) {
+        case SMF_TIMER_SBI_REGISTRATION:
+            client = nf_instance->client;
+            ogs_assert(client);
+            addr = client->addr;
+            ogs_assert(addr);
+
+            ogs_warn("Retry to registration with NRF [%s]:%d",
+                        OGS_ADDR(addr, buf), OGS_PORT(addr));
+
             OGS_FSM_TRAN(s, &smf_nf_state_will_register);
             break;
 

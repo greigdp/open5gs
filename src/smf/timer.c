@@ -49,8 +49,8 @@ const char *smf_timer_get_name(smf_timer_e id)
         return "SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL";
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
         return "SMF_TIMER_NF_INSTANCE_HEARTBEAT";
-    case SMF_TIMER_SBI_VALIDITY:
-        return "SMF_TIMER_SBI_VALIDITY";
+    case SMF_TIMER_NF_INSTANCE_VALIDITY:
+        return "SMF_TIMER_NF_INSTANCE_VALIDITY";
     case SMF_TIMER_SUBSCRIPTION_VALIDITY:
         return "SMF_TIMER_SUBSCRIPTION_VALIDITY";
     default: 
@@ -76,7 +76,7 @@ static void timer_send_event(int timer_id, void *data)
     case SMF_TIMER_SBI_REGISTRATION:
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
-    case SMF_TIMER_SBI_VALIDITY:
+    case SMF_TIMER_NF_INSTANCE_VALIDITY:
     case SMF_TIMER_SUBSCRIPTION_VALIDITY:
         e = smf_event_new(SMF_EVT_SBI_TIMER);
         e->timer_id = timer_id;
@@ -120,9 +120,9 @@ void smf_timer_nf_instance_heartbeat(void *data)
     timer_send_event(SMF_TIMER_NF_INSTANCE_HEARTBEAT, data);
 }
 
-void smf_timer_sbi_validity(void *data)
+void smf_timer_nf_instance_validity(void *data)
 {
-    timer_send_event(SMF_TIMER_SBI_VALIDITY, data);
+    timer_send_event(SMF_TIMER_NF_INSTANCE_VALIDITY, data);
 }
 
 void smf_timer_subscription_validity(void *data)
