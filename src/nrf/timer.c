@@ -20,10 +20,7 @@
 #include "context.h"
 
 static nrf_timer_cfg_t g_nrf_timer_cfg[MAX_NUM_OF_NRF_TIMER] = {
-    [NRF_TIMER_SBI_NO_HEARTBEAT] =
-        { .duration = ogs_time_from_sec(12) },
-    [NRF_TIMER_SBI_NO_VALIDITY] =
-        { .duration = ogs_time_from_sec(86400) },
+    /* Nothing */
 };
 
 nrf_timer_cfg_t *nrf_timer_cfg(nrf_timer_e id)

@@ -28,12 +28,6 @@ static smf_timer_cfg_t g_smf_timer_cfg[MAX_NUM_OF_SMF_TIMER] = {
         { .duration = ogs_time_from_sec(12) },
     [SMF_TIMER_SBI_REGISTRATION] =
         { .duration = ogs_time_from_sec(3) },
-    [SMF_TIMER_SBI_HEARTBEAT] =
-        { .duration = ogs_time_from_sec(3) },
-    [SMF_TIMER_SBI_NO_HEARTBEAT] =
-        { .duration = ogs_time_from_sec(12) },
-    [SMF_TIMER_SBI_NO_VALIDITY] =
-        { .duration = ogs_time_from_sec(86400) },
 };
 
 smf_timer_cfg_t *smf_timer_cfg(smf_timer_e id)

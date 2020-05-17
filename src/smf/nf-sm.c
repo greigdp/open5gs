@@ -205,19 +205,13 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
         if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
             ogs_info("NF registered [%s]", ogs_sbi_self()->nf_instance_id);
 
-            smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration =
-                    ogs_time_from_sec(nf_instance->time.heartbeat);
-            smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration =
-                smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration *
-                    OGS_SBI_HEARTBEAT_RETRYCOUNT;
-
-            /* check whether Heartbeat is enabled or not */
-            if (smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration)
+            if (nf_instance->time.heartbeat) {
                 ogs_timer_start(nf_instance->t_heartbeat,
-                        smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration);
-            if (smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration)
+                        ogs_time_from_sec(nf_instance->time.heartbeat));
                 ogs_timer_start(nf_instance->t_no_heartbeat,
-                    smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration);
+                        ogs_time_from_sec(nf_instance->time.heartbeat *
+                            OGS_SBI_HEARTBEAT_RETRYCOUNT));
+            }
 
             smf_sbi_send_nf_status_subscribe(client, smf_self()->nf_type);
         }
@@ -228,8 +222,10 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
         if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
             ogs_info("NF de-registered [%s]", ogs_sbi_self()->nf_instance_id);
 
-            ogs_timer_stop(nf_instance->t_heartbeat);
-            ogs_timer_stop(nf_instance->t_no_heartbeat);
+            if (nf_instance->time.heartbeat) {
+                ogs_timer_stop(nf_instance->t_heartbeat);
+                ogs_timer_stop(nf_instance->t_no_heartbeat);
+            }
         }
         break;
 
@@ -245,10 +241,10 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
 
                 if (message->res_status == OGS_SBI_HTTP_STATUS_NO_CONTENT ||
                     message->res_status == OGS_SBI_HTTP_STATUS_OK) {
-                    if (smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration)
+                    if (nf_instance->time.heartbeat)
                         ogs_timer_start(nf_instance->t_no_heartbeat,
-                            smf_timer_cfg(
-                                SMF_TIMER_SBI_NO_HEARTBEAT)->duration);
+                                ogs_time_from_sec(nf_instance->time.heartbeat *
+                                    OGS_SBI_HEARTBEAT_RETRYCOUNT));
                 } else {
                     ogs_error("HTTP response error : %d", message->res_status);
                 }
@@ -269,9 +265,10 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
     case SMF_EVT_SBI_TIMER:
         switch(e->timer_id) {
         case SMF_TIMER_SBI_HEARTBEAT:
-            if (smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration)
+            if (nf_instance->time.heartbeat) {
                 ogs_timer_start(nf_instance->t_heartbeat,
-                        smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration);
+                        ogs_time_from_sec(nf_instance->time.heartbeat));
+            }
 
             smf_sbi_send_nf_update(nf_instance);
             smf_sbi_send_nf_discover(nf_instance->client,

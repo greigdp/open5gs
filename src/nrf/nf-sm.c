@@ -185,14 +185,11 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
         ogs_info("NF registred [%s]", nf_instance->id);
-        nrf_timer_cfg(NRF_TIMER_SBI_NO_HEARTBEAT)->duration =
-            ogs_time_from_sec(nf_instance->time.heartbeat) *
-                OGS_SBI_HEARTBEAT_RETRYCOUNT;
-
-        /* check whether Heartbeat is enabled or not */
-        if (nrf_timer_cfg(NRF_TIMER_SBI_NO_HEARTBEAT)->duration)
+        if (nf_instance->time.heartbeat) {
             ogs_timer_start(nf_instance->t_no_heartbeat,
-                    nrf_timer_cfg(NRF_TIMER_SBI_NO_HEARTBEAT)->duration);
+                ogs_time_from_sec(nf_instance->time.heartbeat) *
+                    OGS_SBI_HEARTBEAT_RETRYCOUNT);
+        }
 
         nrf_sbi_send_nf_status_notify_all(
                 OpenAPI_notification_event_type_NF_REGISTERED, nf_instance);
@@ -200,7 +197,9 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
 
     case OGS_FSM_EXIT_SIG:
         ogs_info("NF de-registered [%s]", nf_instance->id);
-        ogs_timer_stop(nf_instance->t_no_heartbeat);
+        if (nf_instance->time.heartbeat) {
+            ogs_timer_stop(nf_instance->t_no_heartbeat);
+        }
 
         nrf_sbi_send_nf_status_notify_all(
                 OpenAPI_notification_event_type_NF_DEREGISTERED, nf_instance);
@@ -223,10 +222,11 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
                 SWITCH(message->h.method)
                 CASE(OGS_SBI_HTTP_METHOD_PUT)
                 CASE(OGS_SBI_HTTP_METHOD_PATCH)
-                    if (nrf_timer_cfg(NRF_TIMER_SBI_NO_HEARTBEAT)->duration)
+                    if (nf_instance->time.heartbeat) {
                         ogs_timer_start(nf_instance->t_no_heartbeat,
-                            nrf_timer_cfg(
-                                NRF_TIMER_SBI_NO_HEARTBEAT)->duration);
+                            ogs_time_from_sec(nf_instance->time.heartbeat) *
+                                OGS_SBI_HEARTBEAT_RETRYCOUNT);
+                    }
 
                     handled = nrf_nnrf_handle_nf_update(
                             nf_instance, server, session, message);
