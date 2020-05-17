@@ -75,8 +75,6 @@ void smf_terminate(void)
 
     ogs_thread_destroy(thread);
 
-    ogs_msleep(300);
-
     smf_fd_final();
 
     smf_context_final();
