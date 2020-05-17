@@ -119,12 +119,12 @@ typedef struct ogs_sbi_subscription_s {
         int validity;
     } time;
 
+    ogs_timer_t *t_validity;            /* validation period */
+
     char *id;                           /* SubscriptionId */
     OpenAPI_nf_type_e nf_type;
     OpenAPI_nf_status_e nf_status;
     char *notification_uri;
-
-    ogs_timer_t *t_validity;            /* validation period */
 
     void *client;                       /* only used in SERVER */
 } ogs_sbi_subscription_t;

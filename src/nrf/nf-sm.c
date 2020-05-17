@@ -57,9 +57,9 @@ void nrf_nf_state_initial(ogs_fsm_t *s, nrf_event_t *e)
     nf_instance = e->nf_instance;
     ogs_assert(nf_instance);
 
-    nf_instance->t_no_heartbeat = ogs_timer_add(nrf_self()->timer_mgr,
-            nrf_timer_sbi_no_heartbeat, nf_instance);
-    ogs_assert(nf_instance->t_no_heartbeat);
+    nf_instance->t_heartbeat = ogs_timer_add(nrf_self()->timer_mgr,
+            nrf_timer_sbi_instance_heartbeat, nf_instance);
+    ogs_assert(nf_instance->t_heartbeat);
 
     OGS_FSM_TRAN(s, &nrf_nf_state_will_register);
 }
@@ -76,7 +76,7 @@ void nrf_nf_state_final(ogs_fsm_t *s, nrf_event_t *e)
     nf_instance = e->nf_instance;
     ogs_assert(nf_instance);
 
-    ogs_timer_delete(nf_instance->t_no_heartbeat);
+    ogs_timer_delete(nf_instance->t_heartbeat);
 }
 
 void nrf_nf_state_will_register(ogs_fsm_t *s, nrf_event_t *e)
@@ -186,7 +186,7 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
     case OGS_FSM_ENTRY_SIG:
         ogs_info("NF registred [%s]", nf_instance->id);
         if (nf_instance->time.heartbeat) {
-            ogs_timer_start(nf_instance->t_no_heartbeat,
+            ogs_timer_start(nf_instance->t_heartbeat,
                 ogs_time_from_sec(nf_instance->time.heartbeat) *
                     OGS_SBI_HEARTBEAT_RETRYCOUNT);
         }
@@ -198,7 +198,7 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
     case OGS_FSM_EXIT_SIG:
         ogs_info("NF de-registered [%s]", nf_instance->id);
         if (nf_instance->time.heartbeat) {
-            ogs_timer_stop(nf_instance->t_no_heartbeat);
+            ogs_timer_stop(nf_instance->t_heartbeat);
         }
 
         nrf_sbi_send_nf_status_notify_all(
@@ -223,7 +223,7 @@ void nrf_nf_state_registered(ogs_fsm_t *s, nrf_event_t *e)
                 CASE(OGS_SBI_HTTP_METHOD_PUT)
                 CASE(OGS_SBI_HTTP_METHOD_PATCH)
                     if (nf_instance->time.heartbeat) {
-                        ogs_timer_start(nf_instance->t_no_heartbeat,
+                        ogs_timer_start(nf_instance->t_heartbeat,
                             ogs_time_from_sec(nf_instance->time.heartbeat) *
                                 OGS_SBI_HEARTBEAT_RETRYCOUNT);
                     }

@@ -208,7 +208,7 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
 
     case NRF_EVT_SBI_TIMER:
         switch(e->timer_id) {
-        case NRF_TIMER_SBI_NO_HEARTBEAT:
+        case NRF_TIMER_SBI_INSTANCE_HEARTBEAT:
             nf_instance = e->nf_instance;
             ogs_assert(nf_instance);
 
@@ -221,7 +221,7 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
             /* FIXME : Remove unnecessary Client */
             break;
 
-        case NRF_TIMER_SBI_NO_VALIDITY:
+        case NRF_TIMER_SBI_SUBSCRIPTION_VALIDITY:
             subscription = e->subscription;
             ogs_assert(subscription);
 

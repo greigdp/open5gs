@@ -32,10 +32,10 @@ nrf_timer_cfg_t *nrf_timer_cfg(nrf_timer_e id)
 const char *nrf_timer_get_name(nrf_timer_e id)
 {
     switch (id) {
-    case NRF_TIMER_SBI_NO_HEARTBEAT:
-        return "NRF_TIMER_SBI_NO_HEARTBEAT";
-    case NRF_TIMER_SBI_NO_VALIDITY:
-        return "NRF_TIMER_SBI_NO_VALIDITY";
+    case NRF_TIMER_SBI_INSTANCE_HEARTBEAT:
+        return "NRF_TIMER_SBI_INSTANCE_HEARTBEAT";
+    case NRF_TIMER_SBI_SUBSCRIPTION_VALIDITY:
+        return "NRF_TIMER_SBI_SUBSCRIPTION_VALIDITY";
     default: 
        break;
     }
@@ -50,12 +50,12 @@ static void timer_send_event(int timer_id, void *data)
     ogs_assert(data);
 
     switch (timer_id) {
-    case NRF_TIMER_SBI_NO_HEARTBEAT:
+    case NRF_TIMER_SBI_INSTANCE_HEARTBEAT:
         e = nrf_event_new(NRF_EVT_SBI_TIMER);
         e->timer_id = timer_id;
         e->nf_instance = data;
         break;
-    case NRF_TIMER_SBI_NO_VALIDITY:
+    case NRF_TIMER_SBI_SUBSCRIPTION_VALIDITY:
         e = nrf_event_new(NRF_EVT_SBI_TIMER);
         e->timer_id = timer_id;
         e->subscription = data;
@@ -73,12 +73,12 @@ static void timer_send_event(int timer_id, void *data)
     }
 }
 
-void nrf_timer_sbi_no_heartbeat(void *data)
+void nrf_timer_sbi_instance_heartbeat(void *data)
 {
-    timer_send_event(NRF_TIMER_SBI_NO_HEARTBEAT, data);
+    timer_send_event(NRF_TIMER_SBI_INSTANCE_HEARTBEAT, data);
 }
 
-void nrf_timer_sbi_no_validity(void *data)
+void nrf_timer_sbi_subscription_validity(void *data)
 {
-    timer_send_event(NRF_TIMER_SBI_NO_VALIDITY, data);
+    timer_send_event(NRF_TIMER_SBI_SUBSCRIPTION_VALIDITY, data);
 }

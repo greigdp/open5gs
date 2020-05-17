@@ -190,7 +190,7 @@ bool nrf_nnrf_handle_nf_status_subscribe(ogs_sbi_server_t *server,
         SubscriptionData->validity_time = ogs_strdup(buf);
 
         subscription->t_validity = ogs_timer_add(nrf_self()->timer_mgr,
-            nrf_timer_sbi_no_validity, subscription);
+            nrf_timer_sbi_subscription_validity, subscription);
         ogs_assert(subscription->t_validity);
         ogs_timer_start(subscription->t_validity,
                 ogs_time_from_sec(subscription->time.validity));
