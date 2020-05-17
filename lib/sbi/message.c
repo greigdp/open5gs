@@ -68,6 +68,7 @@ ogs_sbi_request_t *ogs_sbi_request_new(void)
     ogs_assert(request);
     memset(request, 0, sizeof(ogs_sbi_request_t));
 
+    request->http.params = ogs_hash_make();
     request->http.headers = ogs_hash_make();
 
     return request;
@@ -81,6 +82,7 @@ ogs_sbi_response_t *ogs_sbi_response_new(void)
     ogs_assert(response);
     memset(response, 0, sizeof(ogs_sbi_response_t));
 
+    response->http.params = ogs_hash_make();
     response->http.headers = ogs_hash_make();
 
     return response;
@@ -130,6 +132,15 @@ static void http_message_free(http_message_t *http)
 {
     ogs_assert(http);
 
+    if (http->params) {
+        ogs_hash_index_t *hi;
+        for (hi = ogs_hash_first(http->params); hi; hi = ogs_hash_next(hi)) {
+            char *val = ogs_hash_this_val(hi);
+            ogs_free(val);
+        }
+        ogs_hash_destroy(http->params);
+    }
+
     if (http->headers) {
         ogs_hash_index_t *hi;
         for (hi = ogs_hash_first(http->headers); hi; hi = ogs_hash_next(hi)) {
@@ -165,6 +176,16 @@ ogs_sbi_request_t *ogs_sbi_build_request(ogs_sbi_message_t *message)
         request->h.resource.name = ogs_strdup(message->h.resource.name);
         if (message->h.resource.id)
             request->h.resource.id = ogs_strdup(message->h.resource.id);
+    }
+
+    /* URL Param */
+    if (message->param.target_nf_type) {
+        ogs_sbi_header_set(request->http.params,
+                OGS_SBI_PARAM_TARGET_NF_TYPE, message->param.target_nf_type);
+    }
+    if (message->param.requester_nf_type) {
+        ogs_sbi_header_set(request->http.params,
+                OGS_SBI_PARAM_REQUESTER_NF_TYPE, message->param.target_nf_type);
     }
 
     /* HTTP Message */

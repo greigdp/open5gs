@@ -86,6 +86,9 @@ extern "C" {
 #define OGS_SBI_RESOURCE_NAME_SUBSCRIPTIONS         "subscriptions"
 #define OGS_SBI_RESOURCE_NAME_NF_STATUS_NOTIFY      "nf-status-notify"
 
+#define OGS_SBI_PARAM_TARGET_NF_TYPE                "target-nf-type"
+#define OGS_SBI_PARAM_REQUESTER_NF_TYPE             "requester-nf-type"
+
 #define OGS_SBI_ACCEPT_ENCODING                     "Accept-Encoding"
 #define OGS_SBI_CONTENT_TYPE                        "Content-Type"
 #define OGS_SBI_CONTENT_JSON_TYPE                   "application/json"
@@ -123,6 +126,11 @@ typedef struct ogs_sbi_message_s {
         bool location;
         char *cache_control;
     } http;
+
+    struct {
+        char *target_nf_type;
+        char *requester_nf_type;
+    } param;
 
     int res_status;
 

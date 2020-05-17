@@ -28,7 +28,9 @@ extern "C" {
 #endif
 
 typedef struct http_message_s {
+    ogs_hash_t *params;
     ogs_hash_t *headers;
+
     char *content;
     size_t content_length;
 } http_message_t;

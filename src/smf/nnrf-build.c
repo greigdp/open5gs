@@ -189,6 +189,14 @@ ogs_sbi_request_t *smf_nnrf_build_nf_discover(
     message.h.api.version = (char *)OGS_SBI_API_VERSION;
     message.h.resource.name = (char *)OGS_SBI_RESOURCE_NAME_NF_INSTANCES;
 
+    message.param.target_nf_type =
+        OpenAPI_nf_type_ToString(target_nf_type);
+    ogs_assert(message.param.target_nf_type);
+
+    message.param.requester_nf_type =
+        OpenAPI_nf_type_ToString(requester_nf_type);
+    ogs_assert(message.param.requester_nf_type);
+
     request = ogs_sbi_build_request(&message);
     ogs_assert(request);
 
