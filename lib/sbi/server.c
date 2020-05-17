@@ -30,6 +30,21 @@ typedef struct ogs_sbi_session_s {
 
     ogs_sbi_request_t       *request;
     ogs_sbi_server_t        *server;
+
+    /*
+     * The HTTP server(MHD) should send an HTTP response
+     * if an HTTP client(CURL) is requested.
+     *
+     * If the HTTP client closes the socket without sending an HTTP response,
+     * the CPU load of a program using MHD is 100%. This is because
+     * POLLIN(POLLRDHUP) is generated. So, the callback function of poll
+     * continues to be called.
+     *
+     * I've created the timer to check whether the user does not use
+     * the HTTP response. When the timer expires, an assertion occurs and
+     * terminates the program.
+     */
+    ogs_timer_t             *timer;
 } ogs_sbi_session_t;
 
 static OGS_POOL(server_pool, ogs_sbi_server_t);
@@ -54,6 +69,8 @@ static void notify_completed(
         struct MHD_Connection *connection,
         void **con_cls,
         enum MHD_RequestTerminationCode toe);
+
+static void session_timer_expired(void *data);
 
 void ogs_sbi_server_init(int num_of_session_pool)
 {
@@ -87,6 +104,14 @@ static ogs_sbi_session_t *session_add(ogs_sbi_server_t *server,
     session->request = request;
     session->connection = connection;
 
+    session->timer = ogs_timer_add(
+            ogs_sbi_self()->timer_mgr, session_timer_expired, session);
+    ogs_assert(session->timer);
+
+    /* If User does not send http response within 1 second,
+     * we will assert this program. */
+    ogs_timer_start(session->timer, ogs_time_from_sec(1));
+
     ogs_list_add(&server->suspended_session_list, session);
 
     return session;
@@ -103,12 +128,31 @@ static void session_remove(ogs_sbi_session_t *session)
 
     ogs_list_remove(&server->suspended_session_list, session);
 
+    ogs_assert(session->timer);
+    ogs_timer_delete(session->timer);
+
     connection = session->connection;
     ogs_assert(connection);
 
     MHD_resume_connection(connection);
 
     ogs_pool_free(&session_pool, session);
+}
+
+static void session_timer_expired(void *data)
+{
+    ogs_sbi_session_t *session = NULL;
+
+    session = data;
+    ogs_assert(session);
+
+    ogs_fatal("An HTTP request was received, "
+                "but the HTTP response is missing.");
+    ogs_fatal("Please send the related pcap files for this case.");
+
+    session_remove(session);
+
+    ogs_assert_if_reached();
 }
 
 static void session_remove_all(ogs_sbi_server_t *server)
