@@ -138,9 +138,10 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
     }
 
     if (NF_INSTANCE_IS_SELF(NFProfile->nf_instance_id)) {
-        ogs_error("My NF Instance is not allowed");
+        ogs_error("The notification is not allowed [%s]",
+                NFProfile->nf_instance_id);
         ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_FORBIDDEN,
-                message, "My NF Instance is not allowed",
+                message, "The notification is not allowed",
                 NFProfile->nf_instance_id);
         return false;
     }
