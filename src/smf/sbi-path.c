@@ -95,6 +95,16 @@ int smf_sbi_open(void)
     return OGS_OK;
 }
 
+void smf_sbi_close(void)
+{
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
+        smf_nf_fsm_fini(nf_instance);
+
+    ogs_sbi_server_stop_all();
+}
+
 void smf_sbi_nf_associate_client(
         ogs_sbi_nf_instance_t *nf_instance, ogs_sbi_client_t *client)
 {
@@ -103,17 +113,6 @@ void smf_sbi_nf_associate_client(
 
     OGS_SETUP_SBI_CLIENT(nf_instance, client);
     client->cb = client_cb;
-}
-
-void smf_sbi_close(void)
-{
-    ogs_sbi_nf_instance_t *nf_instance = NULL, *next_nf_instance = NULL;
-
-    ogs_list_for_each_safe(
-            &ogs_sbi_self()->nf_instance_list, next_nf_instance, nf_instance)
-        smf_nf_fsm_fini(nf_instance);
-
-    ogs_sbi_server_stop_all();
 }
 
 void smf_sbi_send_nf_register(ogs_sbi_nf_instance_t *nf_instance)
