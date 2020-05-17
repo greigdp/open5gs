@@ -116,7 +116,7 @@ ogs_sbi_request_t *smf_nnrf_build_nf_de_register(
 }
 
 ogs_sbi_request_t *smf_nnrf_build_nf_status_subscribe(
-        OpenAPI_nf_type_e nf_type)
+        ogs_sbi_subscription_t *subscription)
 {
     ogs_sbi_message_t message;
     ogs_sbi_request_t *request = NULL;
@@ -124,7 +124,8 @@ ogs_sbi_request_t *smf_nnrf_build_nf_status_subscribe(
 
     OpenAPI_subscription_data_t *SubscriptionData = NULL;
 
-    ogs_assert(nf_type);
+    ogs_assert(subscription);
+    ogs_assert(subscription->nf_type);
 
     memset(&message, 0, sizeof(message));
     message.h.method = (char *)OGS_SBI_HTTP_METHOD_POST;
@@ -143,7 +144,8 @@ ogs_sbi_request_t *smf_nnrf_build_nf_status_subscribe(
                 OGS_SBI_RESOURCE_NAME_NF_STATUS_NOTIFY, NULL);
     ogs_assert(SubscriptionData->nf_status_notification_uri);
 
-	SubscriptionData->req_nf_type = nf_type;
+	SubscriptionData->req_nf_type = subscription->nf_type;
+    SubscriptionData->req_nf_instance_id = subscription->nf_instance_id;
 
     message.SubscriptionData = SubscriptionData;
 

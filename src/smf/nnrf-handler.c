@@ -62,7 +62,6 @@ void smf_nnrf_handle_nf_status_subscribe(
         ogs_error("No SubscriptionId");
         return;
     }
-
     ogs_sbi_subscription_set_id(
         subscription, SubscriptionData->subscription_id);
 

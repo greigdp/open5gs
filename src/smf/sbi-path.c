@@ -158,8 +158,8 @@ void smf_sbi_send_nf_de_register(ogs_sbi_nf_instance_t *nf_instance)
     ogs_sbi_client_send_request(client, request, nf_instance);
 }
 
-void smf_sbi_send_nf_status_subscribe(
-        ogs_sbi_client_t *client, OpenAPI_nf_type_e nf_type)
+void smf_sbi_send_nf_status_subscribe(ogs_sbi_client_t *client,
+        OpenAPI_nf_type_e nf_type, char *nf_instance_id)
 {
     ogs_sbi_request_t *request = NULL;
     ogs_sbi_subscription_t *subscription = NULL;
@@ -169,8 +169,11 @@ void smf_sbi_send_nf_status_subscribe(
     subscription = ogs_sbi_subscription_add();
     ogs_assert(subscription);
     subscription->client = client;
+    subscription->nf_type = nf_type;
+    if (nf_instance_id)
+        subscription->nf_instance_id = ogs_strdup(nf_instance_id);
 
-    request = smf_nnrf_build_nf_status_subscribe(nf_type);
+    request = smf_nnrf_build_nf_status_subscribe(subscription);
     ogs_assert(request);
     ogs_sbi_client_send_request(client, request, subscription);
 }

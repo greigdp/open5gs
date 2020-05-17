@@ -852,6 +852,9 @@ void ogs_sbi_subscription_remove(ogs_sbi_subscription_t *subscription)
     if (subscription->notification_uri)
         ogs_free(subscription->notification_uri);
 
+    if (subscription->nf_instance_id)
+        ogs_free(subscription->nf_instance_id);
+
     if (subscription->t_validity)
         ogs_timer_delete(subscription->t_validity);
 

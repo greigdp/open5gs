@@ -134,27 +134,31 @@ bool nrf_nnrf_handle_nf_status_subscribe(ogs_sbi_server_t *server,
         return false;
     }
 
+    if (!SubscriptionData->nf_status_notification_uri) {
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                message, "No SubscriptionData", "NFStatusNotificationURL");
+        return false;
+    }
+
     ogs_uuid_get(&uuid);
     ogs_uuid_format(id, &uuid);
 
     subscription = ogs_sbi_subscription_add();
     ogs_assert(subscription);
     ogs_sbi_subscription_set_id(subscription, id);
-
     ogs_assert(subscription->id);
+
+    if (SubscriptionData->req_nf_instance_id)
+        subscription->nf_instance_id =
+            ogs_strdup(SubscriptionData->req_nf_instance_id);
+
     if (SubscriptionData->subscription_id) {
         ogs_warn("NF should not send SubscriptionID[%s]",
                 SubscriptionData->subscription_id);
         ogs_free(SubscriptionData->subscription_id);
     }
-
     SubscriptionData->subscription_id = ogs_strdup(subscription->id);
 
-    if (!SubscriptionData->nf_status_notification_uri) {
-        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
-                message, "No SubscriptionData", "NFStatusNotificationURL");
-        return false;
-    }
     subscription->notification_uri =
             ogs_strdup(SubscriptionData->nf_status_notification_uri);
     ogs_assert(subscription->notification_uri);

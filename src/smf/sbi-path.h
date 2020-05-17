@@ -36,8 +36,8 @@ void smf_sbi_send_nf_register(ogs_sbi_nf_instance_t *nf_instance);
 void smf_sbi_send_nf_update(ogs_sbi_nf_instance_t *nf_instance);
 void smf_sbi_send_nf_de_register(ogs_sbi_nf_instance_t *nf_instance);
 
-void smf_sbi_send_nf_status_subscribe(
-        ogs_sbi_client_t *client, OpenAPI_nf_type_e nf_type);
+void smf_sbi_send_nf_status_subscribe(ogs_sbi_client_t *client,
+        OpenAPI_nf_type_e nf_type, char *nf_instance_id);
 void smf_sbi_send_nf_status_unsubscribe(ogs_sbi_subscription_t *subscription);
 
 void smf_sbi_send_nf_discover(ogs_sbi_client_t *client,

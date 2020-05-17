@@ -214,7 +214,8 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                             OGS_SBI_HEARTBEAT_RETRYCOUNT));
             }
 
-            smf_sbi_send_nf_status_subscribe(client, smf_self()->nf_type);
+            smf_sbi_send_nf_status_subscribe(client,
+                    smf_self()->nf_type, nf_instance->id);
         }
 
         break;
