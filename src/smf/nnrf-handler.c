@@ -221,7 +221,7 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
             ogs_warn("(NF-Discover) NFInstance [%s] has already been added",
                     NFProfile->nf_instance_id);
 
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
             handled = ogs_sbi_nnrf_handle_nf_profile(
                         nf_instance, NFProfile, NULL, NULL);
             if (!handled) return;
