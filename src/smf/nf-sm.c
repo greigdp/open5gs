@@ -22,38 +22,6 @@
 #include "sbi-path.h"
 #include "nnrf-handler.h"
 
-void smf_nf_fsm_init(
-        ogs_sbi_nf_instance_t *nf_instance, void *initial_state,
-        int (*cb)(ogs_sbi_response_t *response, void *data))
-{
-    smf_event_t e;
-    ogs_sbi_client_t *client;
-
-    ogs_assert(initial_state);
-    ogs_assert(cb);
-    ogs_assert(nf_instance);
-    client = nf_instance->client;
-    ogs_assert(client);
-
-    client->cb = cb;
-    e.sbi.data = nf_instance;
-
-    ogs_fsm_create(&nf_instance->sm,
-            initial_state, smf_nf_state_final);
-    ogs_fsm_init(&nf_instance->sm, &e);
-}
-
-void smf_nf_fsm_fini(ogs_sbi_nf_instance_t *nf_instance)
-{
-    smf_event_t e;
-
-    ogs_assert(nf_instance);
-    e.sbi.data = nf_instance;
-
-    ogs_fsm_fini(&nf_instance->sm, &e);
-    ogs_fsm_delete(&nf_instance->sm);
-}
-
 void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
 {
     ogs_sbi_nf_instance_t *nf_instance = NULL;
@@ -65,18 +33,23 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
 
     nf_instance = e->sbi.data;
     ogs_assert(nf_instance);
+    ogs_assert(nf_instance->id);
 
-    nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_registration, nf_instance);
-    ogs_assert(nf_instance->t_registration);
-    nf_instance->t_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_heartbeat, nf_instance);
-    ogs_assert(nf_instance->t_heartbeat);
-    nf_instance->t_no_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_no_heartbeat, nf_instance);
-    ogs_assert(nf_instance->t_no_heartbeat);
+    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
+                smf_timer_sbi_registration, nf_instance);
+        ogs_assert(nf_instance->t_registration);
+        nf_instance->t_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
+                smf_timer_sbi_heartbeat, nf_instance);
+        ogs_assert(nf_instance->t_heartbeat);
+        nf_instance->t_no_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
+                smf_timer_sbi_no_heartbeat, nf_instance);
+        ogs_assert(nf_instance->t_no_heartbeat);
 
-    OGS_FSM_TRAN(s, &smf_nf_state_will_register);
+        OGS_FSM_TRAN(s, &smf_nf_state_will_register);
+    } else {
+        OGS_FSM_TRAN(s, &smf_nf_state_registered);
+    }
 }
 
 void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
@@ -91,9 +64,11 @@ void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
     nf_instance = e->sbi.data;
     ogs_assert(nf_instance);
 
-    ogs_timer_delete(nf_instance->t_registration);
-    ogs_timer_delete(nf_instance->t_heartbeat);
-    ogs_timer_delete(nf_instance->t_no_heartbeat);
+    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        ogs_timer_delete(nf_instance->t_registration);
+        ogs_timer_delete(nf_instance->t_heartbeat);
+        ogs_timer_delete(nf_instance->t_no_heartbeat);
+    }
 }
 
 void smf_nf_state_will_register(ogs_fsm_t *s, smf_event_t *e)
@@ -203,30 +178,37 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
     case OGS_FSM_ENTRY_SIG:
         client = nf_instance->client;
         ogs_assert(client);
-        ogs_info("NF registered [%s]", ogs_sbi_self()->nf_instance_id);
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+            ogs_info("NF registered [%s]", ogs_sbi_self()->nf_instance_id);
 
-        smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration =
-                ogs_time_from_sec(nf_instance->time.heartbeat);
-        smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration =
-            smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration *
-                OGS_SBI_HEARTBEAT_RETRYCOUNT;
+            smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration =
+                    ogs_time_from_sec(nf_instance->time.heartbeat);
+            smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration =
+                smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration *
+                    OGS_SBI_HEARTBEAT_RETRYCOUNT;
 
-        /* check whether Heartbeat is enabled or not */
-        if (smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration)
-            ogs_timer_start(nf_instance->t_heartbeat,
-                    smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration);
-        if (smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration)
-            ogs_timer_start(nf_instance->t_no_heartbeat,
-                smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration);
+            /* check whether Heartbeat is enabled or not */
+            if (smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration)
+                ogs_timer_start(nf_instance->t_heartbeat,
+                        smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration);
+            if (smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration)
+                ogs_timer_start(nf_instance->t_no_heartbeat,
+                    smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration);
 
-        smf_sbi_send_nf_status_subscribe(client, smf_self()->nf_type);
+            smf_sbi_send_nf_status_subscribe(client, smf_self()->nf_type);
+        } else {
+            ogs_info("NF-Profile updated [%s]", ogs_sbi_self()->nf_instance_id);
+        }
+
         break;
 
     case OGS_FSM_EXIT_SIG:
-        ogs_info("NF de-registered [%s]", ogs_sbi_self()->nf_instance_id);
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+            ogs_info("NF de-registered [%s]", ogs_sbi_self()->nf_instance_id);
 
-        ogs_timer_stop(nf_instance->t_heartbeat);
-        ogs_timer_stop(nf_instance->t_no_heartbeat);
+            ogs_timer_stop(nf_instance->t_heartbeat);
+            ogs_timer_stop(nf_instance->t_no_heartbeat);
+        }
         break;
 
     case SMF_EVT_SBI_CLIENT:

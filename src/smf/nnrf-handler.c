@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "sbi-path.h"
 #include "nnrf-handler.h"
 
 void smf_nnrf_handle_nf_register(
@@ -221,7 +222,7 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
             ogs_warn("(NF-Discover) NFInstance [%s] has already been added",
                     NFProfile->nf_instance_id);
 
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
             handled = ogs_sbi_nnrf_handle_nf_profile(
                         nf_instance, NFProfile, NULL, NULL);
             if (!handled) return;

@@ -475,8 +475,13 @@ static void check_multi_info(ogs_sbi_client_t *client)
                     ogs_sbi_header_set(response->http.headers,
                             "Content-Type", content_type);
 
-                if (client->cb)
+                if (client->cb) 
                     client->cb(response, conn->data);
+                else {
+                    ogs_fatal("client callback is not registered");
+                    ogs_sbi_response_free(response);
+                    ogs_assert_if_reached();
+                }
             } else
                 ogs_error("[%d] %s", res, conn->error);
 

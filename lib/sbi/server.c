@@ -588,9 +588,14 @@ suspend:
     session = session_add(server, request, connection);
     ogs_assert(session);
 
-    if (server->cb(server, session, request) != OGS_OK) {
-        ogs_error("server callback error");
-        return MHD_NO;
+    if (server->cb) {
+        if (server->cb(server, session, request) != OGS_OK) {
+            ogs_error("server callback error");
+            return MHD_NO;
+        }
+    } else {
+        ogs_fatal("server callback is not registered");
+        ogs_assert_if_reached();
     }
 
     return MHD_YES;
