@@ -431,7 +431,7 @@ ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_add(char *id)
     nf_instance->id = ogs_strdup(id);
     ogs_assert(nf_instance->id);
 
-    nf_instance->time.heartbeat = ogs_config()->time.sbi.heartbeat;
+    nf_instance->time.heartbeat = ogs_config()->time.nf_instance.heartbeat;
 
     ogs_list_add(&ogs_sbi_self()->nf_instance_list, nf_instance);
 
@@ -829,7 +829,7 @@ ogs_sbi_subscription_t *ogs_sbi_subscription_add(void)
     ogs_assert(subscription);
     memset(subscription, 0, sizeof(ogs_sbi_subscription_t));
 
-    subscription->time.validity = ogs_config()->time.sbi.validity;
+    subscription->time.validity = ogs_config()->time.subscription.validity;
 
     ogs_list_add(&ogs_sbi_self()->subscription_list, subscription);
 

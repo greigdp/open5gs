@@ -419,7 +419,7 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
         ogs_assert(e);
 
         switch(e->timer_id) {
-        case SMF_TIMER_SBI_REGISTRATION:
+        case SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL:
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
         case SMF_TIMER_NF_INSTANCE_VALIDITY:

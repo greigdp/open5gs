@@ -59,9 +59,9 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
     ogs_assert(nf_instance);
     ogs_assert(nf_instance->id);
 
-    nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_registration, nf_instance);
-    ogs_assert(nf_instance->t_registration);
+    nf_instance->t_registration_interval = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_nf_instance_registration_interval, nf_instance);
+    ogs_assert(nf_instance->t_registration_interval);
     nf_instance->t_heartbeat_interval = ogs_timer_add(smf_self()->timer_mgr,
             smf_timer_nf_instance_heartbeat_interval, nf_instance);
     ogs_assert(nf_instance->t_heartbeat_interval);
@@ -91,7 +91,7 @@ void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
     nf_instance = e->sbi.data;
     ogs_assert(nf_instance);
 
-    ogs_timer_delete(nf_instance->t_registration);
+    ogs_timer_delete(nf_instance->t_registration_interval);
     ogs_timer_delete(nf_instance->t_heartbeat_interval);
     ogs_timer_delete(nf_instance->t_heartbeat);
     ogs_timer_delete(nf_instance->t_validity);
@@ -99,8 +99,6 @@ void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
 
 void smf_nf_state_will_register(ogs_fsm_t *s, smf_event_t *e)
 {
-    char buf[OGS_ADDRSTRLEN];
-
     ogs_sbi_nf_instance_t *nf_instance = NULL;
     ogs_sbi_client_t *client = NULL;
     ogs_sbi_message_t *message = NULL;
@@ -116,14 +114,15 @@ void smf_nf_state_will_register(ogs_fsm_t *s, smf_event_t *e)
 
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
-        ogs_timer_start(nf_instance->t_registration,
-                smf_timer_cfg(SMF_TIMER_SBI_REGISTRATION)->duration);
+        ogs_timer_start(nf_instance->t_registration_interval,
+                smf_timer_cfg(SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL)->
+                    duration);
 
         smf_sbi_send_nf_register(nf_instance);
         break;
 
     case OGS_FSM_EXIT_SIG:
-        ogs_timer_stop(nf_instance->t_registration);
+        ogs_timer_stop(nf_instance->t_registration_interval);
         break;
 
     case SMF_EVT_SBI_CLIENT:
@@ -160,17 +159,17 @@ void smf_nf_state_will_register(ogs_fsm_t *s, smf_event_t *e)
 
     case SMF_EVT_SBI_TIMER:
         switch(e->timer_id) {
-        case SMF_TIMER_SBI_REGISTRATION:
+        case SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL:
             client = nf_instance->client;
             ogs_assert(client);
             addr = client->addr;
             ogs_assert(addr);
 
-            ogs_warn("Retry to registration with NRF [%s]:%d",
-                        OGS_ADDR(addr, buf), OGS_PORT(addr));
+            ogs_warn("Retry to registration with NRF [%s]", nf_instance->id);
 
-            ogs_timer_start(nf_instance->t_registration,
-                smf_timer_cfg(SMF_TIMER_SBI_REGISTRATION)->duration);
+            ogs_timer_start(nf_instance->t_registration_interval,
+                smf_timer_cfg(SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL)->
+                    duration);
 
             smf_sbi_send_nf_register(nf_instance);
             break;
@@ -303,11 +302,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
 
 void smf_nf_state_de_registered(ogs_fsm_t *s, smf_event_t *e)
 {
-    char buf[OGS_ADDRSTRLEN];
-
     ogs_sbi_nf_instance_t *nf_instance = NULL;
-    ogs_sbi_client_t *client = NULL;
-    ogs_sockaddr_t *addr = NULL;
     ogs_assert(s);
     ogs_assert(e);
 
@@ -318,33 +313,12 @@ void smf_nf_state_de_registered(ogs_fsm_t *s, smf_event_t *e)
 
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
-        ogs_timer_start(nf_instance->t_registration,
-                smf_timer_cfg(SMF_TIMER_SBI_REGISTRATION)->duration);
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+            ogs_info("NF de-registered [%s]", nf_instance->id);
+        }
         break;
 
     case OGS_FSM_EXIT_SIG:
-        ogs_timer_stop(nf_instance->t_registration);
-        break;
-
-    case SMF_EVT_SBI_TIMER:
-        switch(e->timer_id) {
-        case SMF_TIMER_SBI_REGISTRATION:
-            client = nf_instance->client;
-            ogs_assert(client);
-            addr = client->addr;
-            ogs_assert(addr);
-
-            ogs_warn("Retry to registration with NRF [%s]:%d",
-                        OGS_ADDR(addr, buf), OGS_PORT(addr));
-
-            OGS_FSM_TRAN(s, &smf_nf_state_will_register);
-            break;
-
-        default:
-            ogs_error("Unknown timer[%s:%d]",
-                    smf_timer_get_name(e->timer_id), e->timer_id);
-            break;
-        }
         break;
 
     default:
@@ -355,8 +329,6 @@ void smf_nf_state_de_registered(ogs_fsm_t *s, smf_event_t *e)
 
 void smf_nf_state_exception(ogs_fsm_t *s, smf_event_t *e)
 {
-    char buf[OGS_ADDRSTRLEN];
-
     ogs_sbi_nf_instance_t *nf_instance = NULL;
     ogs_sbi_client_t *client = NULL;
     ogs_sockaddr_t *addr = NULL;
@@ -370,24 +342,28 @@ void smf_nf_state_exception(ogs_fsm_t *s, smf_event_t *e)
 
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
-        ogs_timer_start(nf_instance->t_registration,
-                smf_timer_cfg(SMF_TIMER_SBI_REGISTRATION)->duration);
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+            ogs_timer_start(nf_instance->t_registration_interval,
+                smf_timer_cfg(SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL)->
+                    duration);
+        }
         break;
 
     case OGS_FSM_EXIT_SIG:
-        ogs_timer_stop(nf_instance->t_registration);
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+            ogs_timer_stop(nf_instance->t_registration_interval);
+        }
         break;
 
     case SMF_EVT_SBI_TIMER:
         switch(e->timer_id) {
-        case SMF_TIMER_SBI_REGISTRATION:
+        case SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL:
             client = nf_instance->client;
             ogs_assert(client);
             addr = client->addr;
             ogs_assert(addr);
 
-            ogs_warn("Retry to registration with NRF [%s]:%d",
-                        OGS_ADDR(addr, buf), OGS_PORT(addr));
+            ogs_warn("Retry to registration with NRF [%s]", nf_instance->id);
 
             OGS_FSM_TRAN(s, &smf_nf_state_will_register);
             break;

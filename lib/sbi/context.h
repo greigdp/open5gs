@@ -51,9 +51,9 @@ typedef struct ogs_sbi_context_s {
 typedef struct ogs_sbi_nf_instance_s {
     ogs_lnode_t     lnode;
 
-    ogs_fsm_t       sm;                 /* A state machine */
-    ogs_timer_t     *t_registration;    /* timer to retry
-                                           to register peer node */
+    ogs_fsm_t       sm;                         /* A state machine */
+    ogs_timer_t     *t_registration_interval;   /* timer to retry
+                                                   to register peer node */
 #define OGS_SBI_HEARTBEAT_RETRYCOUNT 4
     struct {
         int heartbeat;

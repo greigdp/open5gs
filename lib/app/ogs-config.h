@@ -89,7 +89,10 @@ typedef struct ogs_config_s {
         struct {
             int heartbeat;
             int validity;
-        } sbi;
+        } nf_instance;
+        struct {
+            int validity;
+        } subscription;
     } time;
 } ogs_config_t;
 

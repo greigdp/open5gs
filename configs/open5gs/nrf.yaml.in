@@ -143,14 +143,20 @@ pool:
 #
 # time:
 #
-#  o SBI Validity (Default : 86400 seconds = 1 day)
+#  o NF Instance Validity (Default : 3600 seconds = 1 hour)
 #
-#  o SBI Validity (Disabled)
-#    sbi:
+#  o NF Instance Validity (10 seconds)
+#    nf_instance:
+#      validity: 10
+#
+#  o Subscription Validity (Default : 86400 seconds = 1 day)
+#
+#  o Subscription Validity (Disabled)
+#    subscription:
 #      validity: 0
 #
-#  o SBI Validity (3600 seconds = 1 hour)
-#    sbi:
+#  o Subscription Validity (3600 seconds = 1 hour)
+#    subscription:
 #      validity: 3600
 #
 time:

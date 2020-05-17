@@ -26,7 +26,7 @@ static smf_timer_cfg_t g_smf_timer_cfg[MAX_NUM_OF_SMF_TIMER] = {
         { .duration = ogs_time_from_sec(12) },
     [SMF_TIMER_PFCP_HEARTBEAT] =
         { .duration = ogs_time_from_sec(12) },
-    [SMF_TIMER_SBI_REGISTRATION] =
+    [SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL] =
         { .duration = ogs_time_from_sec(3) },
 };
 
@@ -43,8 +43,8 @@ const char *smf_timer_get_name(smf_timer_e id)
         return "SMF_TIMER_PFCP_ASSOCIATION";
     case SMF_TIMER_PFCP_HEARTBEAT:
         return "SMF_TIMER_PFCP_HEARTBEAT";
-    case SMF_TIMER_SBI_REGISTRATION:
-        return "SMF_TIMER_SBI_REGISTRATION";
+    case SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL:
+        return "SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL";
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
         return "SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL";
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
@@ -73,7 +73,7 @@ static void timer_send_event(int timer_id, void *data)
         e->timer_id = timer_id;
         e->pfcp_node = data;
         break;
-    case SMF_TIMER_SBI_REGISTRATION:
+    case SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL:
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
     case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
     case SMF_TIMER_NF_INSTANCE_VALIDITY:
@@ -105,9 +105,9 @@ void smf_timer_pfcp_heartbeat(void *data)
     timer_send_event(SMF_TIMER_PFCP_HEARTBEAT, data);
 }
 
-void smf_timer_sbi_registration(void *data)
+void smf_timer_nf_instance_registration_interval(void *data)
 {
-    timer_send_event(SMF_TIMER_SBI_REGISTRATION, data);
+    timer_send_event(SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL, data);
 }
 
 void smf_timer_nf_instance_heartbeat_interval(void *data)
