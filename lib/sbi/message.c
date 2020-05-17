@@ -55,6 +55,8 @@ void ogs_sbi_message_free(ogs_sbi_message_t *message)
         OpenAPI_subscription_data_free(message->SubscriptionData);
     if (message->NotificationData)
         OpenAPI_notification_data_free(message->NotificationData);
+    if (message->SearchResult)
+        OpenAPI_search_result_free(message->SearchResult);
 }
 
 ogs_sbi_request_t *ogs_sbi_request_new(void)
@@ -240,6 +242,10 @@ static char *build_content(ogs_sbi_message_t *message)
     } else if (message->NotificationData) {
         item = OpenAPI_notification_data_convertToJSON(
                 message->NotificationData);
+        ogs_assert(item);
+    } else if (message->SearchResult) {
+        item = OpenAPI_search_result_convertToJSON(
+                message->SearchResult);
         ogs_assert(item);
     }
 
@@ -463,14 +469,33 @@ static int parse_content(ogs_sbi_message_t *message, char *content)
 
                 DEFAULT
                     rv = OGS_ERROR;
-                    ogs_error("Unknown resource name - %s",
+                    ogs_error("Unknown resource name [%s]",
+                            message->h.resource.name);
+                END
+                break;
+
+            CASE(OGS_SBI_SERVICE_NAME_NRF_NFM)
+                SWITCH(message->h.resource.name)
+                CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
+                    message->SearchResult =
+                        OpenAPI_search_result_parseFromJSON(item);
+                    if (!message->SearchResult) {
+                        rv = OGS_ERROR;
+                        ogs_error("JSON parse error");
+                    }
+                    break;
+
+                DEFAULT
+                    rv = OGS_ERROR;
+                    ogs_error("Unknown resource name [%s]",
                             message->h.resource.name);
                 END
                 break;
 
             DEFAULT
                 rv = OGS_ERROR;
-                ogs_error("Not implemented API name - %s", message->h.service.name);
+                ogs_error("Not implemented API name [%s]",
+                        message->h.service.name);
             END
         }
     }

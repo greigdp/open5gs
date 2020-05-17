@@ -165,6 +165,36 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
             END
             break;
 
+        CASE(OGS_SBI_SERVICE_NAME_NRF_DISC)
+
+            SWITCH(message.h.resource.name)
+            CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
+
+                SWITCH(message.h.method)
+                CASE(OGS_SBI_HTTP_METHOD_GET)
+                    nrf_nnrf_handle_nf_discover(server, session, &message);
+                    break;
+
+                DEFAULT
+                    ogs_error("Invalid HTTP method [%s]",
+                            message.h.method);
+                    ogs_sbi_server_send_error(session,
+                            OGS_SBI_HTTP_STATUS_MEHTOD_NOT_ALLOWED,
+                            &message,
+                            "Invalid HTTP method", message.h.method);
+                END
+
+                break;
+
+            DEFAULT
+                ogs_error("Invalid resource name [%s]",
+                        message.h.resource.name);
+                ogs_sbi_server_send_error(session,
+                        OGS_SBI_HTTP_STATUS_MEHTOD_NOT_ALLOWED, &message,
+                        "Unknown resource name", message.h.resource.name);
+            END
+            break;
+
         DEFAULT
             ogs_error("Invalid API name [%s]", message.h.service.name);
             ogs_sbi_server_send_error(session,

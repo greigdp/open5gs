@@ -78,6 +78,7 @@ extern "C" {
 #define OGS_SBI_API_VERSION                         "v1"
 #define OGS_SBI_API_FULL_VERSION                    "1.0.0"
 #define OGS_SBI_SERVICE_NAME_NRF_NFM                "nnrf-nfm"
+#define OGS_SBI_SERVICE_NAME_NRF_DISC               "nnrf-disc"
 #define OGS_SBI_SERVICE_NAME_SMF_PDUSESSION         "nsmf-pdusession"
 #define OGS_SBI_SERVICE_NAME_SMF_EVENT_EXPOSURE     "nsmf-event-exposure"
 
@@ -130,6 +131,7 @@ typedef struct ogs_sbi_message_s {
 
     OpenAPI_subscription_data_t *SubscriptionData;
     OpenAPI_notification_data_t *NotificationData;
+    OpenAPI_search_result_t *SearchResult;
 } ogs_sbi_message_t;
 
 void ogs_sbi_message_init(int num_of_request_pool, int num_of_response_pool);

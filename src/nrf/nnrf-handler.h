@@ -39,6 +39,9 @@ bool nrf_nnrf_handle_nf_status_subscribe(ogs_sbi_server_t *server,
 bool nrf_nnrf_handle_nf_status_unsubscribe(ogs_sbi_server_t *server,
         ogs_sbi_session_t *session, ogs_sbi_message_t *message);
 
+bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
+        ogs_sbi_session_t *session, ogs_sbi_message_t *message);
+
 #ifdef __cplusplus
 }
 #endif

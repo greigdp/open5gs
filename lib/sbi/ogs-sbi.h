@@ -34,6 +34,7 @@
 #include "model/patch_item.h"
 #include "model/subscription_data.h"
 #include "model/notification_data.h"
+#include "model/search_result.h"
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop

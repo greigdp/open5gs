@@ -41,6 +41,7 @@ bool nrf_nnrf_handle_nf_register(
         return false;
     }
 
+    /* ogs_sbi_nnrf_handle_nf_profile() sends error response */
     handled = ogs_sbi_nnrf_handle_nf_profile(
                 nf_instance, NFProfile, session, message);
     if (!handled) return false;
@@ -227,6 +228,62 @@ bool nrf_nnrf_handle_nf_status_unsubscribe(ogs_sbi_server_t *server,
                 OGS_SBI_HTTP_STATUS_NOT_FOUND,
                 message, "Not found", message->h.resource.id);
     }
+
+    return true;
+}
+
+bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
+        ogs_sbi_session_t *session, ogs_sbi_message_t *recvmsg)
+{
+    ogs_sbi_message_t sendmsg;
+    ogs_sbi_response_t *response = NULL;
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    OpenAPI_search_result_t *SearchResult = NULL;
+    OpenAPI_lnode_t *node = NULL;
+
+    ogs_uuid_t uuid;
+    char id[OGS_UUID_FORMATTED_LENGTH + 1];
+
+    ogs_assert(session);
+    ogs_assert(recvmsg);
+
+    ogs_uuid_get(&uuid);
+    ogs_uuid_format(id, &uuid);
+
+    SearchResult = ogs_calloc(1, sizeof(*SearchResult));
+    ogs_assert(SearchResult);
+
+    SearchResult->validity_period = 100;
+    SearchResult->search_id = id;
+
+    SearchResult->nf_instances = OpenAPI_list_create();
+    ogs_assert(SearchResult->nf_instances);
+
+    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
+        OpenAPI_nf_profile_t *NFProfile =
+                ogs_sbi_nnrf_build_nf_profile(nf_instance);
+        ogs_assert(NFProfile);
+
+        OpenAPI_list_add(SearchResult->nf_instances, NFProfile);
+    }
+
+    memset(&sendmsg, 0, sizeof(sendmsg));
+    sendmsg.SearchResult = SearchResult;
+
+    response = ogs_sbi_build_response(&sendmsg);
+    ogs_assert(response);
+    ogs_sbi_server_send_response(session, response, OGS_SBI_HTTP_STATUS_OK);
+
+    OpenAPI_list_for_each(SearchResult->nf_instances, node) {
+        OpenAPI_nf_profile_t *NFProfile = NULL;
+        if (!node->data) continue;
+        NFProfile = node->data;
+        ogs_sbi_nnrf_free_nf_profile(NFProfile);
+    }
+    OpenAPI_list_free(SearchResult->nf_instances);
+
+    ogs_free(SearchResult);
 
     return true;
 }
