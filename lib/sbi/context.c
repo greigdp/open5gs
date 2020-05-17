@@ -463,6 +463,8 @@ void ogs_sbi_nf_instance_remove(ogs_sbi_nf_instance_t *nf_instance)
 
     ogs_list_remove(&ogs_sbi_self()->nf_instance_list, nf_instance);
 
+    ogs_sbi_subscription_remove_all_by_nf_instance_id(nf_instance->id);
+
     ogs_assert(nf_instance->id);
     ogs_free(nf_instance->id);
 
@@ -859,6 +861,21 @@ void ogs_sbi_subscription_remove(ogs_sbi_subscription_t *subscription)
         ogs_timer_delete(subscription->t_validity);
 
     ogs_pool_free(&subscription_pool, subscription);
+}
+
+void ogs_sbi_subscription_remove_all_by_nf_instance_id(char *nf_instance_id)
+{
+    ogs_sbi_subscription_t *subscription = NULL, *next_subscription = NULL;
+
+    ogs_assert(nf_instance_id);
+
+    ogs_list_for_each_safe(&ogs_sbi_self()->subscription_list,
+            next_subscription, subscription) {
+        if (subscription->nf_instance_id &&
+            strcmp(subscription->nf_instance_id, nf_instance_id) == 0) {
+            ogs_sbi_subscription_remove(subscription);
+        }
+    }
 }
 
 void ogs_sbi_subscription_remove_all(void)

@@ -172,6 +172,7 @@ ogs_sbi_subscription_t *ogs_sbi_subscription_add(void);
 void ogs_sbi_subscription_set_id(
         ogs_sbi_subscription_t *subscription, char *id);
 void ogs_sbi_subscription_remove(ogs_sbi_subscription_t *subscription);
+void ogs_sbi_subscription_remove_all_by_nf_instance_id(char *nf_instance_id);
 void ogs_sbi_subscription_remove_all(void);
 ogs_sbi_subscription_t *ogs_sbi_subscription_find(char *id);
 
