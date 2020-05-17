@@ -79,8 +79,8 @@ void smf_nnrf_handle_nf_status_subscribe(
             duration = diff - VALIDITY_MARGIN;
 
             if (duration < VALIDITY_MINIMUM) {
-                ogs_warn("Validation period [%ld seconds, %s] is too small",
-                        diff, SubscriptionData->validity_time);
+                ogs_warn("Validation period [%d seconds, %s] is too small",
+                        (int)diff, SubscriptionData->validity_time);
                 duration = VALIDITY_MINIMUM;
                 ogs_warn("Forced to %d seconds", VALIDITY_MINIMUM);
             }

@@ -213,7 +213,7 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
             ogs_assert(nf_instance);
 
             ogs_warn("No heartbeat [%s]", nf_instance->id);
-            nf_instance->nf_type = OpenAPI_nf_status_SUSPENDED;
+            nf_instance->nf_status = OpenAPI_nf_status_SUSPENDED;
 
             nrf_nf_fsm_fini(nf_instance);
             ogs_sbi_nf_instance_remove(nf_instance);
