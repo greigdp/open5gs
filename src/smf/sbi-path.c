@@ -177,3 +177,15 @@ void smf_sbi_send_nf_status_unsubscribe(ogs_sbi_subscription_t *subscription)
     ogs_assert(request);
     ogs_sbi_client_send_request(client, request, subscription);
 }
+
+void smf_sbi_send_nf_discover(ogs_sbi_client_t *client,
+        OpenAPI_nf_type_e target_nf_type, OpenAPI_nf_type_e requester_nf_type)
+{
+    ogs_sbi_request_t *request = NULL;
+
+    ogs_assert(client);
+
+    request = smf_nnrf_build_nf_discover(target_nf_type, requester_nf_type);
+    ogs_assert(request);
+    ogs_sbi_client_send_request(client, request, NULL);
+}

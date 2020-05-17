@@ -177,3 +177,23 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
     return true;
 }
+
+void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
+{
+    OpenAPI_nf_profile_t *NFProfile = NULL;
+    ogs_sbi_client_t *client = NULL;
+
+    ogs_assert(message);
+    ogs_assert(nf_instance);
+    client = nf_instance->client;
+    ogs_assert(client);
+
+    NFProfile = message->NFProfile;
+    if (!NFProfile) {
+        ogs_error("No NFProfile");
+        return;
+    }
+
+    /* Update from NRF */
+    nf_instance->time.heartbeat = NFProfile->heart_beat_timer;
+}

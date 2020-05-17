@@ -474,7 +474,7 @@ static int parse_content(ogs_sbi_message_t *message, char *content)
                 END
                 break;
 
-            CASE(OGS_SBI_SERVICE_NAME_NRF_NFM)
+            CASE(OGS_SBI_SERVICE_NAME_NRF_DISC)
                 SWITCH(message->h.resource.name)
                 CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
                     message->SearchResult =

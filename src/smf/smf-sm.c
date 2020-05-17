@@ -390,6 +390,18 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
             END
             break;
 
+        CASE(OGS_SBI_SERVICE_NAME_NRF_DISC)
+            SWITCH(sbi_message.h.resource.name)
+            CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
+                smf_nnrf_handle_nf_discover(&sbi_message);
+                break;
+
+            DEFAULT
+                ogs_error("Invalid resource name [%s]",
+                        sbi_message.h.resource.name);
+            END
+            break;
+
         DEFAULT
             ogs_error("Invalid API name [%s]", sbi_message.h.service.name);
         END
