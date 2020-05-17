@@ -431,7 +431,7 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
                 ogs_error("State machine exception");
             break;
 
-        case SMF_TIMER_SBI_NO_VALIDITY:
+        case SMF_TIMER_SUBSCRIPTION_VALIDITY:
             subscription = e->sbi.data;
             ogs_assert(subscription);
 

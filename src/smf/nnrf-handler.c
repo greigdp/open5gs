@@ -87,7 +87,7 @@ void smf_nnrf_handle_nf_status_subscribe(
             }
 
             subscription->t_validity = ogs_timer_add(smf_self()->timer_mgr,
-                smf_timer_sbi_no_validity, subscription);
+                smf_timer_subscription_validity, subscription);
             ogs_assert(subscription->t_validity);
             ogs_timer_start(
                     subscription->t_validity, ogs_time_from_sec(duration));
