@@ -128,8 +128,8 @@ typedef struct ogs_sbi_message_s {
     } http;
 
     struct {
-        char *target_nf_type;
-        char *requester_nf_type;
+        OpenAPI_nf_type_e target_nf_type;
+        OpenAPI_nf_type_e requester_nf_type;
     } param;
 
     int res_status;

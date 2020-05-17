@@ -267,8 +267,14 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     ogs_assert(SearchResult->nf_instances);
 
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
-        OpenAPI_nf_profile_t *NFProfile =
-                ogs_sbi_nnrf_build_nf_profile(nf_instance);
+        OpenAPI_nf_profile_t *NFProfile = NULL;
+
+        if (nf_instance->nf_type != recvmsg->param.target_nf_type)
+            continue;
+        if (nf_instance->nf_type == recvmsg->param.requester_nf_type)
+            continue;
+
+        NFProfile = ogs_sbi_nnrf_build_nf_profile(nf_instance);
         ogs_assert(NFProfile);
 
         OpenAPI_list_add(SearchResult->nf_instances, NFProfile);
