@@ -147,7 +147,10 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
             OGS_SETUP_SBI_CLIENT(nf_instance, client);
 
             ogs_info("(NRF-notify) NF registered [%s]", nf_instance->id);
-        }
+        } else
+            ogs_warn("NFInstance [%s] has already been added",
+                    NFProfile->nf_instance_id);
+
     } else if (NotificationData->event ==
             OpenAPI_notification_event_type_NF_DEREGISTERED) {
         nf_instance = ogs_sbi_nf_instance_find(NFProfile->nf_instance_id);
