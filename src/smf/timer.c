@@ -49,6 +49,8 @@ const char *smf_timer_get_name(smf_timer_e id)
         return "SMF_TIMER_SBI_HEARTBEAT";
     case SMF_TIMER_SBI_NO_HEARTBEAT:
         return "SMF_TIMER_SBI_NO_HEARTBEAT";
+    case SMF_TIMER_SBI_VALIDITY:
+        return "SMF_TIMER_SBI_VALIDITY";
     case SMF_TIMER_SBI_NO_VALIDITY:
         return "SMF_TIMER_SBI_NO_VALIDITY";
     default: 
@@ -74,10 +76,7 @@ static void timer_send_event(int timer_id, void *data)
     case SMF_TIMER_SBI_REGISTRATION:
     case SMF_TIMER_SBI_HEARTBEAT:
     case SMF_TIMER_SBI_NO_HEARTBEAT:
-        e = smf_event_new(SMF_EVT_SBI_TIMER);
-        e->timer_id = timer_id;
-        e->sbi.data = data;
-        break;
+    case SMF_TIMER_SBI_VALIDITY:
     case SMF_TIMER_SBI_NO_VALIDITY:
         e = smf_event_new(SMF_EVT_SBI_TIMER);
         e->timer_id = timer_id;
@@ -119,6 +118,11 @@ void smf_timer_sbi_heartbeat(void *data)
 void smf_timer_sbi_no_heartbeat(void *data)
 {
     timer_send_event(SMF_TIMER_SBI_NO_HEARTBEAT, data);
+}
+
+void smf_timer_sbi_validity(void *data)
+{
+    timer_send_event(SMF_TIMER_SBI_VALIDITY, data);
 }
 
 void smf_timer_sbi_no_validity(void *data)

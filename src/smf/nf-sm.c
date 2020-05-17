@@ -59,17 +59,20 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
     ogs_assert(nf_instance);
     ogs_assert(nf_instance->id);
 
-    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
-        nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
-                smf_timer_sbi_registration, nf_instance);
-        ogs_assert(nf_instance->t_registration);
-        nf_instance->t_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-                smf_timer_sbi_heartbeat, nf_instance);
-        ogs_assert(nf_instance->t_heartbeat);
-        nf_instance->t_no_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-                smf_timer_sbi_no_heartbeat, nf_instance);
-        ogs_assert(nf_instance->t_no_heartbeat);
+    nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_sbi_registration, nf_instance);
+    ogs_assert(nf_instance->t_registration);
+    nf_instance->t_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_sbi_heartbeat, nf_instance);
+    ogs_assert(nf_instance->t_heartbeat);
+    nf_instance->t_no_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_sbi_no_heartbeat, nf_instance);
+    ogs_assert(nf_instance->t_no_heartbeat);
+    nf_instance->t_validity = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_sbi_validity, nf_instance);
+    ogs_assert(nf_instance->t_validity);
 
+    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
         OGS_FSM_TRAN(s, &smf_nf_state_will_register);
     } else {
         OGS_FSM_TRAN(s, &smf_nf_state_registered);
@@ -88,11 +91,10 @@ void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
     nf_instance = e->sbi.data;
     ogs_assert(nf_instance);
 
-    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
-        ogs_timer_delete(nf_instance->t_registration);
-        ogs_timer_delete(nf_instance->t_heartbeat);
-        ogs_timer_delete(nf_instance->t_no_heartbeat);
-    }
+    ogs_timer_delete(nf_instance->t_registration);
+    ogs_timer_delete(nf_instance->t_heartbeat);
+    ogs_timer_delete(nf_instance->t_no_heartbeat);
+    ogs_timer_delete(nf_instance->t_validity);
 }
 
 void smf_nf_state_will_register(ogs_fsm_t *s, smf_event_t *e)

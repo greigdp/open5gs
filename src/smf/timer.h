@@ -36,6 +36,7 @@ typedef enum {
     SMF_TIMER_SBI_REGISTRATION,
     SMF_TIMER_SBI_HEARTBEAT,
     SMF_TIMER_SBI_NO_HEARTBEAT,
+    SMF_TIMER_SBI_VALIDITY,
     SMF_TIMER_SBI_NO_VALIDITY,
 
     MAX_NUM_OF_SMF_TIMER,
@@ -57,6 +58,7 @@ void smf_timer_pfcp_heartbeat(void *data);
 void smf_timer_sbi_registration(void *data);
 void smf_timer_sbi_heartbeat(void *data);
 void smf_timer_sbi_no_heartbeat(void *data);
+void smf_timer_sbi_validity(void *data);
 void smf_timer_sbi_no_validity(void *data);
 
 #ifdef __cplusplus

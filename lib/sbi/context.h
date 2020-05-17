@@ -57,10 +57,12 @@ typedef struct ogs_sbi_nf_instance_s {
 #define OGS_SBI_HEARTBEAT_RETRYCOUNT 4
     struct {
         int heartbeat;
+        int validity;
     } time;
 
     ogs_timer_t     *t_heartbeat;       /* heartbeat period */
     ogs_timer_t     *t_no_heartbeat;    /* check NF aliveness */
+    ogs_timer_t     *t_validity;        /* validation period */
 
     char *id;                           /* NFInstanceId */
 
@@ -77,7 +79,7 @@ typedef struct ogs_sbi_nf_instance_s {
 
     ogs_list_t nf_service_list;
 
-    void *client; /* Only used in CLIENT */
+    void *client; /* only used in CLIENT */
 } ogs_sbi_nf_instance_t;
 
 typedef struct ogs_sbi_nf_service_s {
@@ -113,9 +115,8 @@ typedef struct ogs_sbi_nf_service_s {
 typedef struct ogs_sbi_subscription_s {
     ogs_lnode_t lnode;
 
-#define OGS_SBI_VALIDITY_RETRYCOUNT 5
-    struct              {
-        int             validity;
+    struct {
+        int validity;
     } time;
 
     char *id;                           /* SubscriptionId */
@@ -123,9 +124,9 @@ typedef struct ogs_sbi_subscription_s {
     OpenAPI_nf_status_e nf_status;
     char *notification_uri;
 
-    ogs_timer_t *t_validity;            /* Validation Timer */
+    ogs_timer_t *t_validity;            /* validation period */
 
-    void *client;                       /* Only used in SERVER */
+    void *client;                       /* only used in SERVER */
 } ogs_sbi_subscription_t;
 
 void ogs_sbi_context_init(ogs_pollset_t *pollset, ogs_timer_mgr_t *timer_mgr);
