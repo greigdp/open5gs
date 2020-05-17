@@ -47,7 +47,7 @@ void ogs_sbi_context_init(ogs_pollset_t *pollset, ogs_timer_mgr_t *timer_mgr)
     /* FIXME : number of pool size */
     ogs_sbi_message_init(32, 32);
     ogs_sbi_server_init(32);
-    ogs_sbi_client_init(32, 32);
+    ogs_sbi_client_init(512, 512);
 
     ogs_list_init(&self.nf_instance_list);
     ogs_pool_init(&nf_instance_pool, ogs_config()->pool.sbi);
