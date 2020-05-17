@@ -45,10 +45,10 @@ const char *smf_timer_get_name(smf_timer_e id)
         return "SMF_TIMER_PFCP_HEARTBEAT";
     case SMF_TIMER_SBI_REGISTRATION:
         return "SMF_TIMER_SBI_REGISTRATION";
-    case SMF_TIMER_SBI_HEARTBEAT:
-        return "SMF_TIMER_SBI_HEARTBEAT";
-    case SMF_TIMER_SBI_NO_HEARTBEAT:
-        return "SMF_TIMER_SBI_NO_HEARTBEAT";
+    case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
+        return "SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL";
+    case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
+        return "SMF_TIMER_NF_INSTANCE_HEARTBEAT";
     case SMF_TIMER_SBI_VALIDITY:
         return "SMF_TIMER_SBI_VALIDITY";
     case SMF_TIMER_SBI_NO_VALIDITY:
@@ -74,8 +74,8 @@ static void timer_send_event(int timer_id, void *data)
         e->pfcp_node = data;
         break;
     case SMF_TIMER_SBI_REGISTRATION:
-    case SMF_TIMER_SBI_HEARTBEAT:
-    case SMF_TIMER_SBI_NO_HEARTBEAT:
+    case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
+    case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
     case SMF_TIMER_SBI_VALIDITY:
     case SMF_TIMER_SBI_NO_VALIDITY:
         e = smf_event_new(SMF_EVT_SBI_TIMER);
@@ -110,14 +110,14 @@ void smf_timer_sbi_registration(void *data)
     timer_send_event(SMF_TIMER_SBI_REGISTRATION, data);
 }
 
-void smf_timer_sbi_heartbeat(void *data)
+void smf_timer_nf_instance_heartbeat_interval(void *data)
 {
-    timer_send_event(SMF_TIMER_SBI_HEARTBEAT, data);
+    timer_send_event(SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL, data);
 }
 
-void smf_timer_sbi_no_heartbeat(void *data)
+void smf_timer_nf_instance_heartbeat(void *data)
 {
-    timer_send_event(SMF_TIMER_SBI_NO_HEARTBEAT, data);
+    timer_send_event(SMF_TIMER_NF_INSTANCE_HEARTBEAT, data);
 }
 
 void smf_timer_sbi_validity(void *data)

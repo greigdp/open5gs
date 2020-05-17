@@ -60,9 +60,9 @@ typedef struct ogs_sbi_nf_instance_s {
         int validity;
     } time;
 
-    ogs_timer_t     *t_heartbeat;       /* heartbeat period */
-    ogs_timer_t     *t_no_heartbeat;    /* check NF aliveness */
-    ogs_timer_t     *t_validity;        /* validation period */
+    ogs_timer_t     *t_heartbeat_interval;  /* heartbeat interval */
+    ogs_timer_t     *t_heartbeat;           /* check heartbeat */
+    ogs_timer_t     *t_validity;            /* check validation */
 
     char *id;                           /* NFInstanceId */
 
@@ -119,7 +119,7 @@ typedef struct ogs_sbi_subscription_s {
         int validity;
     } time;
 
-    ogs_timer_t *t_validity;            /* validation period */
+    ogs_timer_t *t_validity;            /* check validation */
 
     char *id;                           /* SubscriptionId */
     OpenAPI_nf_type_e nf_type;

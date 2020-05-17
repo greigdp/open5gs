@@ -62,12 +62,12 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
     nf_instance->t_registration = ogs_timer_add(smf_self()->timer_mgr,
             smf_timer_sbi_registration, nf_instance);
     ogs_assert(nf_instance->t_registration);
+    nf_instance->t_heartbeat_interval = ogs_timer_add(smf_self()->timer_mgr,
+            smf_timer_nf_instance_heartbeat_interval, nf_instance);
+    ogs_assert(nf_instance->t_heartbeat_interval);
     nf_instance->t_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_heartbeat, nf_instance);
+            smf_timer_nf_instance_heartbeat, nf_instance);
     ogs_assert(nf_instance->t_heartbeat);
-    nf_instance->t_no_heartbeat = ogs_timer_add(smf_self()->timer_mgr,
-            smf_timer_sbi_no_heartbeat, nf_instance);
-    ogs_assert(nf_instance->t_no_heartbeat);
     nf_instance->t_validity = ogs_timer_add(smf_self()->timer_mgr,
             smf_timer_sbi_validity, nf_instance);
     ogs_assert(nf_instance->t_validity);
@@ -92,8 +92,8 @@ void smf_nf_state_final(ogs_fsm_t *s, smf_event_t *e)
     ogs_assert(nf_instance);
 
     ogs_timer_delete(nf_instance->t_registration);
+    ogs_timer_delete(nf_instance->t_heartbeat_interval);
     ogs_timer_delete(nf_instance->t_heartbeat);
-    ogs_timer_delete(nf_instance->t_no_heartbeat);
     ogs_timer_delete(nf_instance->t_validity);
 }
 
@@ -208,9 +208,9 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
             ogs_info("NF registered [%s]", ogs_sbi_self()->nf_instance_id);
 
             if (nf_instance->time.heartbeat) {
-                ogs_timer_start(nf_instance->t_heartbeat,
+                ogs_timer_start(nf_instance->t_heartbeat_interval,
                         ogs_time_from_sec(nf_instance->time.heartbeat));
-                ogs_timer_start(nf_instance->t_no_heartbeat,
+                ogs_timer_start(nf_instance->t_heartbeat,
                         ogs_time_from_sec(nf_instance->time.heartbeat *
                             OGS_SBI_HEARTBEAT_RETRYCOUNT));
             }
@@ -225,8 +225,8 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
             ogs_info("NF de-registered [%s]", ogs_sbi_self()->nf_instance_id);
 
             if (nf_instance->time.heartbeat) {
+                ogs_timer_stop(nf_instance->t_heartbeat_interval);
                 ogs_timer_stop(nf_instance->t_heartbeat);
-                ogs_timer_stop(nf_instance->t_no_heartbeat);
             }
         }
         break;
@@ -244,7 +244,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                 if (message->res_status == OGS_SBI_HTTP_STATUS_NO_CONTENT ||
                     message->res_status == OGS_SBI_HTTP_STATUS_OK) {
                     if (nf_instance->time.heartbeat)
-                        ogs_timer_start(nf_instance->t_no_heartbeat,
+                        ogs_timer_start(nf_instance->t_heartbeat,
                                 ogs_time_from_sec(nf_instance->time.heartbeat *
                                     OGS_SBI_HEARTBEAT_RETRYCOUNT));
                 } else {
@@ -266,9 +266,9 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
 
     case SMF_EVT_SBI_TIMER:
         switch(e->timer_id) {
-        case SMF_TIMER_SBI_HEARTBEAT:
+        case SMF_TIMER_NF_INSTANCE_HEARTBEAT_INTERVAL:
             if (nf_instance->time.heartbeat) {
-                ogs_timer_start(nf_instance->t_heartbeat,
+                ogs_timer_start(nf_instance->t_heartbeat_interval,
                         ogs_time_from_sec(nf_instance->time.heartbeat));
             }
 
@@ -277,7 +277,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                     OpenAPI_nf_type_AMF, smf_self()->nf_type);
             break;
 
-        case SMF_TIMER_SBI_NO_HEARTBEAT:
+        case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
             OGS_FSM_TRAN(s, &smf_nf_state_will_register);
             break;
 
