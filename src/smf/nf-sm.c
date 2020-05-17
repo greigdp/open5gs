@@ -228,6 +228,8 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                 ogs_timer_stop(nf_instance->t_heartbeat_interval);
                 ogs_timer_stop(nf_instance->t_heartbeat);
             }
+
+            smf_sbi_send_nf_de_register(nf_instance);
         }
         break;
 
@@ -273,8 +275,6 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
             }
 
             smf_sbi_send_nf_update(nf_instance);
-            smf_sbi_send_nf_discover(nf_instance->client,
-                    OpenAPI_nf_type_AMF, smf_self()->nf_type);
             break;
 
         case SMF_TIMER_NF_INSTANCE_HEARTBEAT:
