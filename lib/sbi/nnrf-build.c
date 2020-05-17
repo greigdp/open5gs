@@ -38,7 +38,7 @@ OpenAPI_nf_profile_t *ogs_sbi_nnrf_build_nf_profile(
     NFProfile = ogs_calloc(1, sizeof(*NFProfile));
     ogs_assert(NFProfile);
 
-	NFProfile->nf_instance_id = ogs_sbi_self()->nf_instance_id;
+	NFProfile->nf_instance_id = nf_instance->id;
 	NFProfile->nf_type = nf_instance->nf_type;
 	NFProfile->nf_status = nf_instance->nf_status;
 

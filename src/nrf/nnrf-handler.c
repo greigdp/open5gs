@@ -248,7 +248,7 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     SearchResult = ogs_calloc(1, sizeof(*SearchResult));
     ogs_assert(SearchResult);
 
-    SearchResult->validity_period = 100;
+    SearchResult->validity_period = 3600;   /* 1days */
 
     SearchResult->nf_instances = OpenAPI_list_create();
     ogs_assert(SearchResult->nf_instances);

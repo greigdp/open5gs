@@ -180,20 +180,27 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
 void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
 {
-    OpenAPI_nf_profile_t *NFProfile = NULL;
-    ogs_sbi_client_t *client = NULL;
+    OpenAPI_search_result_t *SearchResult = NULL;
+    OpenAPI_lnode_t *node = NULL;
 
     ogs_assert(message);
-    ogs_assert(nf_instance);
-    client = nf_instance->client;
-    ogs_assert(client);
 
-    NFProfile = message->NFProfile;
-    if (!NFProfile) {
-        ogs_error("No NFProfile");
+    SearchResult = message->SearchResult;
+    if (!SearchResult) {
+        ogs_error("No SearchResult");
         return;
     }
 
-    /* Update from NRF */
-    nf_instance->time.heartbeat = NFProfile->heart_beat_timer;
+    ogs_fatal("validity = %d", SearchResult->validity_period);
+
+    OpenAPI_list_for_each(SearchResult->nf_instances, node) {
+        OpenAPI_nf_profile_t *NFProfile = NULL;
+
+        if (!node->data) continue;
+
+        NFProfile = node->data;
+
+        ogs_fatal("id = %s", NFProfile->nf_instance_id);
+
+    }
 }
