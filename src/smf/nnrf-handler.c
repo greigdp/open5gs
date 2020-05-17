@@ -123,6 +123,28 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
         return false;
     }
 
+    if (!NFProfile->nf_instance_id) {
+        ogs_error("No NFProfile.NFInstanceId");
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                message, "No NFProfile", "NFInstanceId");
+        return false;
+    }
+
+    if (!NFProfile->nf_instance_id) {
+        ogs_error("No NFProfile.NFInstanceId");
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                message, "No NFProfile", "NFInstanceId");
+        return false;
+    }
+
+    if (NF_INSTANCE_IS_SELF(NFProfile->nf_instance_id)) {
+        ogs_error("My NF Instance is not allowed");
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_FORBIDDEN,
+                message, "My NF Instance is not allowed",
+                NFProfile->nf_instance_id);
+        return false;
+    }
+
     if (NotificationData->event ==
             OpenAPI_notification_event_type_NF_REGISTERED) {
         ogs_sbi_client_t *client = NULL;
@@ -148,13 +170,11 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
             ogs_warn("(NRF-notify) NF [%s] has already been added",
                     NFProfile->nf_instance_id);
 
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
-            handled = ogs_sbi_nnrf_handle_nf_profile(
-                        nf_instance, NFProfile, session, message);
-            if (!handled) return false;
+        handled = ogs_sbi_nnrf_handle_nf_profile(
+                    nf_instance, NFProfile, session, message);
+        if (!handled) return false;
 
-            ogs_info("(NRF-notify) NF Profile updated [%s]", nf_instance->id);
-        }
+        ogs_info("(NRF-notify) NF Profile updated [%s]", nf_instance->id);
 
 
     } else if (NotificationData->event ==
@@ -229,7 +249,7 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
             ogs_warn("(NF-Discover) NF [%s] has already been added",
                     NFProfile->nf_instance_id);
 
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
+        if (NF_INSTANCE_IS_OTHERS(nf_instance->id)) {
             handled = ogs_sbi_nnrf_handle_nf_profile(
                         nf_instance, NFProfile, NULL, NULL);
             if (!handled) {

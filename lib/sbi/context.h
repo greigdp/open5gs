@@ -64,6 +64,11 @@ typedef struct ogs_sbi_nf_instance_s {
     ogs_timer_t     *t_heartbeat;           /* check heartbeat */
     ogs_timer_t     *t_validity;            /* check validation */
 
+#define NF_INSTANCE_IS_SELF(_iD) \
+    strcmp((_iD), ogs_sbi_self()->nf_instance_id) == 0
+#define NF_INSTANCE_IS_OTHERS(_iD) \
+    strcmp((_iD), ogs_sbi_self()->nf_instance_id) != 0
+
     char *id;                           /* NFInstanceId */
 
     OpenAPI_nf_type_e nf_type;
@@ -142,8 +147,6 @@ ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_find(char *id);
 
 ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_build_default(
         OpenAPI_nf_type_e nf_type, ogs_sbi_client_t *client);
-
-bool ogs_sbi_nf_instance_is_self(char *id);
 
 ogs_sbi_nf_service_t *ogs_sbi_nf_service_add(ogs_sbi_nf_instance_t *nf_instance,
         char *id, char *name, OpenAPI_uri_scheme_e scheme);

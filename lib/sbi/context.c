@@ -542,11 +542,6 @@ ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_build_default(
     return nf_instance;
 }
 
-bool ogs_sbi_nf_instance_is_self(char *id)
-{
-    return strcmp(id, ogs_sbi_self()->nf_instance_id) == 0;
-}
-
 ogs_sbi_nf_service_t *ogs_sbi_nf_service_add(ogs_sbi_nf_instance_t *nf_instance,
         char *id, char *name, OpenAPI_uri_scheme_e scheme)
 {

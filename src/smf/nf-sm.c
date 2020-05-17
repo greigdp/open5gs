@@ -72,7 +72,7 @@ void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
             smf_timer_nf_instance_validity, nf_instance);
     ogs_assert(nf_instance->t_validity);
 
-    if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+    if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
         OGS_FSM_TRAN(s, &smf_nf_state_will_register);
     } else {
         OGS_FSM_TRAN(s, &smf_nf_state_registered);
@@ -203,7 +203,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
     case OGS_FSM_ENTRY_SIG:
         client = nf_instance->client;
         ogs_assert(client);
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
             ogs_info("NF registered [%s]", nf_instance->id);
 
             if (nf_instance->time.heartbeat) {
@@ -220,7 +220,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
         break;
 
     case OGS_FSM_EXIT_SIG:
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
             ogs_info("NF de-registered [%s]", nf_instance->id);
 
             if (nf_instance->time.heartbeat) {
@@ -281,7 +281,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
             break;
 
         case SMF_TIMER_NF_INSTANCE_VALIDITY:
-            if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
+            if (NF_INSTANCE_IS_OTHERS(nf_instance->id)) {
                 ogs_info("NF expired [%s]", nf_instance->id);
                 OGS_FSM_TRAN(s, &smf_nf_state_de_registered);
             }
@@ -313,7 +313,7 @@ void smf_nf_state_de_registered(ogs_fsm_t *s, smf_event_t *e)
 
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
             ogs_info("NF de-registered [%s]", nf_instance->id);
         }
         break;
@@ -342,7 +342,7 @@ void smf_nf_state_exception(ogs_fsm_t *s, smf_event_t *e)
 
     switch (e->id) {
     case OGS_FSM_ENTRY_SIG:
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
             ogs_timer_start(nf_instance->t_registration_interval,
                 smf_timer_cfg(SMF_TIMER_NF_INSTANCE_REGISTRATION_INTERVAL)->
                     duration);
@@ -350,7 +350,7 @@ void smf_nf_state_exception(ogs_fsm_t *s, smf_event_t *e)
         break;
 
     case OGS_FSM_EXIT_SIG:
-        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == true) {
+        if (NF_INSTANCE_IS_SELF(nf_instance->id)) {
             ogs_timer_stop(nf_instance->t_registration_interval);
         }
         break;
