@@ -486,15 +486,15 @@ static void notify_connection(void *cls,
     }
 }
 
-static int add_headers(ogs_hash_t *headers,
+static int get_values(ogs_hash_t *hash,
         enum MHD_ValueKind kind, const char *key, const char *value)
 {
-    ogs_assert(headers);
+    ogs_assert(hash);
 
     if (!key || !value)
         return MHD_YES;     //  Ignore connection value if invalid!
 
-    ogs_sbi_header_set(headers, key, value);
+    ogs_sbi_header_set(hash, key, value);
 
     return MHD_YES;
 }
@@ -528,9 +528,13 @@ static int access_handler(
         ogs_assert(request);
         *con_cls = request;
 
+        ogs_assert(request->http.params);
+        MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND,
+                (MHD_KeyValueIterator)get_values, request->http.params);
+
         ogs_assert(request->http.headers);
         MHD_get_connection_values(connection, MHD_HEADER_KIND,
-                (MHD_KeyValueIterator)add_headers, request->http.headers);
+                (MHD_KeyValueIterator)get_values, request->http.headers);
 
         request->h.method = ogs_strdup(method);
         request->h.url = ogs_strdup(url);

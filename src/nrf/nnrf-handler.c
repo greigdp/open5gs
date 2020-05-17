@@ -245,6 +245,19 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     ogs_assert(session);
     ogs_assert(recvmsg);
 
+    if (!recvmsg->param.target_nf_type) {
+        ogs_error("No target-nf-type [%s]", recvmsg->h.url);
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                recvmsg, "No target-nf-type", NULL);
+        return false;
+    }
+    if (!recvmsg->param.requester_nf_type) {
+        ogs_error("No requester-nf-type [%s]", recvmsg->h.url);
+        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                recvmsg, "No requester-nf-type", NULL);
+        return false;
+    }
+
     SearchResult = ogs_calloc(1, sizeof(*SearchResult));
     ogs_assert(SearchResult);
 

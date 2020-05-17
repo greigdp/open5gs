@@ -301,6 +301,16 @@ int ogs_sbi_parse_request(
         return OGS_ERROR;
     }
 
+    for (hi = ogs_hash_first(request->http.params);
+            hi; hi = ogs_hash_next(hi)) {
+        if (!strcmp(ogs_hash_this_key(hi), OGS_SBI_PARAM_TARGET_NF_TYPE)) {
+            message->param.target_nf_type = ogs_hash_this_val(hi);
+        } else if (!strcmp(ogs_hash_this_key(hi),
+                    OGS_SBI_PARAM_REQUESTER_NF_TYPE)) {
+            message->param.requester_nf_type = ogs_hash_this_val(hi);
+        }
+    }
+
     for (hi = ogs_hash_first(request->http.headers);
             hi; hi = ogs_hash_next(hi)) {
         if (!strcmp(ogs_hash_this_key(hi), OGS_SBI_ACCEPT_ENCODING)) {
