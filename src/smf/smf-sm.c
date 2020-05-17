@@ -428,8 +428,14 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
             ogs_assert(OGS_FSM_STATE(&nf_instance->sm));
 
             ogs_fsm_dispatch(&nf_instance->sm, e);
-            if (OGS_FSM_CHECK(&nf_instance->sm, smf_nf_state_exception))
+            if (OGS_FSM_CHECK(&nf_instance->sm, smf_nf_state_de_registered)) {
+                smf_nf_fsm_fini(nf_instance);
+                ogs_sbi_nf_instance_remove(nf_instance);
+
+            } else if (OGS_FSM_CHECK(&nf_instance->sm,
+                        smf_nf_state_exception)) {
                 ogs_error("State machine exception");
+            }
             break;
 
         case SMF_TIMER_SUBSCRIPTION_VALIDITY:
