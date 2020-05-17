@@ -185,7 +185,8 @@ ogs_sbi_request_t *ogs_sbi_build_request(ogs_sbi_message_t *message)
     }
     if (message->param.requester_nf_type) {
         ogs_sbi_header_set(request->http.params,
-                OGS_SBI_PARAM_REQUESTER_NF_TYPE, message->param.target_nf_type);
+                OGS_SBI_PARAM_REQUESTER_NF_TYPE,
+                    message->param.requester_nf_type);
     }
 
     /* HTTP Message */

@@ -242,6 +242,49 @@ static void mcode_or_die(const char *where, CURLMcode code)
     }
 }
 
+static char *add_params_to_url(CURL *easy, char *url, ogs_hash_t *params)
+{
+    ogs_hash_index_t *hi;
+    int has_params = 0;
+    const char *fp = "?", *np = "&";
+
+    ogs_assert(easy);
+    ogs_assert(url);
+    ogs_assert(params);
+    ogs_assert(ogs_hash_count(params));
+
+    has_params = (strchr(url, '?') != NULL);
+
+    for (hi = ogs_hash_first(params); hi; hi = ogs_hash_next(hi)) {
+        const char *key = NULL;
+        char *key_esc = NULL;
+        char *val = NULL;
+        char *val_esc = NULL;
+
+        key = ogs_hash_this_key(hi);
+        ogs_assert(key);
+        val = ogs_hash_this_val(hi);
+        ogs_assert(val);
+
+        key_esc = curl_easy_escape(easy, key, 0);
+        ogs_assert(key_esc);
+        val_esc = curl_easy_escape(easy, val, 0);
+        ogs_assert(val_esc);
+
+        if (!has_params) {
+            url = ogs_mstrcatf(url, "%s%s=%s", fp, key_esc, val_esc);
+            has_params = 1;
+        } else {
+            url = ogs_mstrcatf(url, "%s%s=%s", np, key_esc, val_esc);
+        }
+
+        curl_free(val_esc);
+        curl_free(key_esc);
+    }
+
+    return url;
+}
+
 static connection_t *connection_add(ogs_sbi_client_t *client,
         ogs_sbi_request_t *request, void *data)
 {
@@ -301,7 +344,13 @@ static connection_t *connection_add(ogs_sbi_client_t *client,
         }
     }
 
+    if (ogs_hash_count(request->http.params)) {
+        request->h.url = add_params_to_url(conn->easy,
+                            request->h.url, request->http.params);
+    }
+
     curl_easy_setopt(conn->easy, CURLOPT_URL, request->h.url);
+
     curl_easy_setopt(conn->easy, CURLOPT_PRIVATE, conn);
     curl_easy_setopt(conn->easy, CURLOPT_WRITEFUNCTION, write_cb);
     curl_easy_setopt(conn->easy, CURLOPT_WRITEDATA, conn);
