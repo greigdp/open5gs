@@ -246,7 +246,15 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
             smf_sbi_nf_associate_client(nf_instance, client);
 
             /* TIME : Update validity from NRF */
-            nf_instance->time.heartbeat = SearchResult->validity_period;
+            if (SearchResult->validity_period) {
+                nf_instance->time.validity = SearchResult->validity_period;
+
+                ogs_assert(nf_instance->t_validity);
+                ogs_timer_start(nf_instance->t_validity,
+                        ogs_time_from_sec(nf_instance->time.validity));
+
+            } else
+                ogs_warn("NF Instance validity-time should not 0");
 
             ogs_info("(NF-Discover) NF Profile updated [%s]", nf_instance->id);
         }
