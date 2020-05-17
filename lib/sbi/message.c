@@ -207,7 +207,9 @@ ogs_sbi_response_t *ogs_sbi_build_response(ogs_sbi_message_t *message)
 
     if (message->http.location == true)
         ogs_sbi_header_set(response->http.headers, "Location", message->h.url);
-
+    if (message->http.cache_control)
+        ogs_sbi_header_set(response->http.headers, "Cache-Control",
+                message->http.cache_control);
 
     return response;
 }

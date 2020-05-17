@@ -133,7 +133,7 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
             ogs_info("(NRF-notify) NF registered [%s]", nf_instance->id);
         } else
-            ogs_warn("(NRF-notifY) NFInstance [%s] has already been added",
+            ogs_warn("(NRF-notify) NFInstance [%s] has already been added",
                     NFProfile->nf_instance_id);
 
         if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {

@@ -248,7 +248,7 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     SearchResult = ogs_calloc(1, sizeof(*SearchResult));
     ogs_assert(SearchResult);
 
-    SearchResult->validity_period = 3600;   /* 1days */
+    SearchResult->validity_period = 3600;   /* 1 days */
 
     SearchResult->nf_instances = OpenAPI_list_create();
     ogs_assert(SearchResult->nf_instances);
@@ -267,6 +267,8 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
 
     memset(&sendmsg, 0, sizeof(sendmsg));
     sendmsg.SearchResult = SearchResult;
+    sendmsg.http.cache_control =
+        ogs_msprintf("max-age=%d", SearchResult->validity_period);
 
     response = ogs_sbi_build_response(&sendmsg);
     ogs_assert(response);
@@ -280,6 +282,8 @@ bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
     }
     OpenAPI_list_free(SearchResult->nf_instances);
 
+    if (sendmsg.http.cache_control)
+        ogs_free(sendmsg.http.cache_control);
     ogs_free(SearchResult);
 
     return true;

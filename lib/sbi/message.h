@@ -121,6 +121,7 @@ typedef struct ogs_sbi_message_s {
         char *content_encoding;
         char *content_type;
         bool location;
+        char *cache_control;
     } http;
 
     int res_status;
