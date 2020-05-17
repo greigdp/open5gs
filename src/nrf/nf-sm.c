@@ -58,7 +58,7 @@ void nrf_nf_state_initial(ogs_fsm_t *s, nrf_event_t *e)
     ogs_assert(nf_instance);
 
     nf_instance->t_heartbeat = ogs_timer_add(nrf_self()->timer_mgr,
-            nrf_timer_sbi_instance_heartbeat, nf_instance);
+            nrf_timer_nf_instance_heartbeat, nf_instance);
     ogs_assert(nf_instance->t_heartbeat);
 
     OGS_FSM_TRAN(s, &nrf_nf_state_will_register);
