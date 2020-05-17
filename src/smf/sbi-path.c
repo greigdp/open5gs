@@ -88,10 +88,21 @@ int smf_sbi_open(void)
         ogs_sbi_nf_service_add_version(service, (char*)OGS_SBI_API_VERSION,
                 (char*)OGS_SBI_API_FULL_VERSION, NULL);
 
-        smf_sbi_nf_fsm_init(nf_instance);
+        smf_sbi_nf_associate_client(nf_instance, client);
+        smf_nf_fsm_init(nf_instance);
     }
 
     return OGS_OK;
+}
+
+void smf_sbi_nf_associate_client(
+        ogs_sbi_nf_instance_t *nf_instance, ogs_sbi_client_t *client)
+{
+    ogs_assert(nf_instance);
+    ogs_assert(client);
+
+    OGS_SETUP_SBI_CLIENT(nf_instance, client);
+    client->cb = client_cb;
 }
 
 void smf_sbi_close(void)
@@ -100,37 +111,9 @@ void smf_sbi_close(void)
 
     ogs_list_for_each_safe(
             &ogs_sbi_self()->nf_instance_list, next_nf_instance, nf_instance)
-        smf_sbi_nf_fsm_fini(nf_instance);
+        smf_nf_fsm_fini(nf_instance);
 
     ogs_sbi_server_stop_all();
-}
-
-void smf_sbi_nf_fsm_init(ogs_sbi_nf_instance_t *nf_instance)
-{
-    smf_event_t e;
-    ogs_sbi_client_t *client;
-
-    ogs_assert(nf_instance);
-    client = nf_instance->client;
-    ogs_assert(client);
-
-    client->cb = client_cb;
-    e.sbi.data = nf_instance;
-
-    ogs_fsm_create(&nf_instance->sm,
-            smf_nf_state_initial, smf_nf_state_final);
-    ogs_fsm_init(&nf_instance->sm, &e);
-}
-
-void smf_sbi_nf_fsm_fini(ogs_sbi_nf_instance_t *nf_instance)
-{
-    smf_event_t e;
-
-    ogs_assert(nf_instance);
-    e.sbi.data = nf_instance;
-
-    ogs_fsm_fini(&nf_instance->sm, &e);
-    ogs_fsm_delete(&nf_instance->sm);
 }
 
 void smf_sbi_send_nf_register(ogs_sbi_nf_instance_t *nf_instance)

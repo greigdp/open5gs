@@ -29,8 +29,8 @@ extern "C" {
 int smf_sbi_open(void);
 void smf_sbi_close(void);
 
-void smf_sbi_nf_fsm_init(ogs_sbi_nf_instance_t *nf_instance);
-void smf_sbi_nf_fsm_fini(ogs_sbi_nf_instance_t *nf_instance);
+void smf_sbi_nf_associate_client(
+        ogs_sbi_nf_instance_t *nf_instance, ogs_sbi_client_t *client);
 
 void smf_sbi_send_nf_register(ogs_sbi_nf_instance_t *nf_instance);
 void smf_sbi_send_nf_update(ogs_sbi_nf_instance_t *nf_instance);

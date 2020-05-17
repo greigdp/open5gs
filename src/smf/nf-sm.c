@@ -22,6 +22,30 @@
 #include "sbi-path.h"
 #include "nnrf-handler.h"
 
+void smf_nf_fsm_init(ogs_sbi_nf_instance_t *nf_instance)
+{
+    smf_event_t e;
+
+    ogs_assert(nf_instance);
+
+    e.sbi.data = nf_instance;
+
+    ogs_fsm_create(&nf_instance->sm,
+            smf_nf_state_initial, smf_nf_state_final);
+    ogs_fsm_init(&nf_instance->sm, &e);
+}
+
+void smf_nf_fsm_fini(ogs_sbi_nf_instance_t *nf_instance)
+{
+    smf_event_t e;
+
+    ogs_assert(nf_instance);
+    e.sbi.data = nf_instance;
+
+    ogs_fsm_fini(&nf_instance->sm, &e);
+    ogs_fsm_delete(&nf_instance->sm);
+}
+
 void smf_nf_state_initial(ogs_fsm_t *s, smf_event_t *e)
 {
     ogs_sbi_nf_instance_t *nf_instance = NULL;
@@ -196,8 +220,6 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                     smf_timer_cfg(SMF_TIMER_SBI_NO_HEARTBEAT)->duration);
 
             smf_sbi_send_nf_status_subscribe(client, smf_self()->nf_type);
-        } else {
-            ogs_info("NF-Profile updated [%s]", ogs_sbi_self()->nf_instance_id);
         }
 
         break;
