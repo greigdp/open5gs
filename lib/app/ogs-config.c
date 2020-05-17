@@ -192,6 +192,15 @@ static int ogs_app_ctx_validation(void)
         return OGS_ERROR;
     }
 
+    if (self.time.nf_instance.validity == 0) {
+        ogs_error("NF instance validity time should not be set to 0");
+        ogs_error("time:");
+        ogs_error("  nf_instance:");
+        ogs_error("    validity: 0");
+
+        return OGS_ERROR;
+    }
+
     return OGS_OK;
 }
 int ogs_config_parse()
