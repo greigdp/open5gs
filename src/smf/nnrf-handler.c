@@ -124,17 +124,23 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
     if (NotificationData->event ==
             OpenAPI_notification_event_type_NF_REGISTERED) {
+        ogs_sbi_client_t *client = NULL;
+
         nf_instance = ogs_sbi_nf_instance_find(NFProfile->nf_instance_id);
         if (!nf_instance) {
-            ogs_sbi_client_t *client = NULL;
-
             nf_instance = ogs_sbi_nf_instance_add(NFProfile->nf_instance_id);
             ogs_assert(nf_instance);
+
+            ogs_info("(NRF-notify) NF registered [%s]", nf_instance->id);
+        } else
+            ogs_warn("(NRF-notifY) NFInstance [%s] has already been added",
+                    NFProfile->nf_instance_id);
 
             handled = ogs_sbi_nnrf_handle_nf_profile(
                         nf_instance, NFProfile, session, message);
             if (!handled) return false;
 
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
             client = ogs_sbi_nf_instance_find_client(nf_instance);
             if (!client) {
                 ogs_error("Cannot find client");
@@ -146,10 +152,9 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
             OGS_SETUP_SBI_CLIENT(nf_instance, client);
 
-            ogs_info("(NRF-notify) NF registered [%s]", nf_instance->id);
-        } else
-            ogs_warn("NFInstance [%s] has already been added",
-                    NFProfile->nf_instance_id);
+            ogs_info("(NRF-notify) NF Profile updated [%s]", nf_instance->id);
+        }
+
 
     } else if (NotificationData->event ==
             OpenAPI_notification_event_type_NF_DEREGISTERED) {
@@ -160,7 +165,7 @@ bool smf_nnrf_handle_nf_status_notify(ogs_sbi_server_t *server,
 
             /* FIXME : Remove unnecessary Client */
         } else
-            ogs_warn("NFInstance [%s] has already been removed",
+            ogs_warn("(NRF-notify) NFInstance [%s] has already been removed",
                     NFProfile->nf_instance_id);
     } else {
         char *eventstr = OpenAPI_notification_event_type_ToString(
@@ -185,6 +190,7 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
 {
     OpenAPI_search_result_t *SearchResult = NULL;
     OpenAPI_lnode_t *node = NULL;
+    bool handled;
 
     ogs_assert(message);
 
@@ -198,12 +204,37 @@ void smf_nnrf_handle_nf_discover(ogs_sbi_message_t *message)
 
     OpenAPI_list_for_each(SearchResult->nf_instances, node) {
         OpenAPI_nf_profile_t *NFProfile = NULL;
+        ogs_sbi_nf_instance_t *nf_instance = NULL;
+        ogs_sbi_client_t *client = NULL;
 
         if (!node->data) continue;
 
         NFProfile = node->data;
 
-        ogs_fatal("id = %s", NFProfile->nf_instance_id);
+        nf_instance = ogs_sbi_nf_instance_find(NFProfile->nf_instance_id);
+        if (!nf_instance) {
+            nf_instance = ogs_sbi_nf_instance_add(NFProfile->nf_instance_id);
+            ogs_assert(nf_instance);
 
+            ogs_info("(NF-Discover) NF registered [%s]", nf_instance->id);
+        } else
+            ogs_warn("(NF-Discover) NFInstance [%s] has already been added",
+                    NFProfile->nf_instance_id);
+
+        if (ogs_sbi_nf_instance_is_self(nf_instance->id) == false) {
+            handled = ogs_sbi_nnrf_handle_nf_profile(
+                        nf_instance, NFProfile, NULL, NULL);
+            if (!handled) return;
+
+            client = ogs_sbi_nf_instance_find_client(nf_instance);
+            if (!client) {
+                ogs_error("Cannot find client");
+                return;
+            }
+
+            OGS_SETUP_SBI_CLIENT(nf_instance, client);
+
+            ogs_info("(NF-Discover) NF Profile updated [%s]", nf_instance->id);
+        }
     }
 }

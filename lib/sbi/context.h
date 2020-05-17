@@ -142,6 +142,8 @@ ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_find(char *id);
 ogs_sbi_nf_instance_t *ogs_sbi_nf_instance_build_default(
         OpenAPI_nf_type_e nf_type, ogs_sbi_client_t *client);
 
+bool ogs_sbi_nf_instance_is_self(char *id);
+
 ogs_sbi_nf_service_t *ogs_sbi_nf_service_add(ogs_sbi_nf_instance_t *nf_instance,
         char *id, char *name, OpenAPI_uri_scheme_e scheme);
 void ogs_sbi_nf_service_add_version(ogs_sbi_nf_service_t *nf_service,

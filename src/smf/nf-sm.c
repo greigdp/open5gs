@@ -270,7 +270,7 @@ void smf_nf_state_registered(ogs_fsm_t *s, smf_event_t *e)
                         smf_timer_cfg(SMF_TIMER_SBI_HEARTBEAT)->duration);
 
             smf_sbi_send_nf_update(nf_instance);
-#if 0
+#if 1
             smf_sbi_send_nf_discover(nf_instance->client, smf_self()->nf_type,
                     smf_self()->nf_type);
 #endif

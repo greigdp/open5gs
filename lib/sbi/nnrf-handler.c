@@ -28,33 +28,36 @@ bool ogs_sbi_nnrf_handle_nf_profile(ogs_sbi_nf_instance_t *nf_instance,
     OpenAPI_lnode_t *node;
 
     ogs_assert(nf_instance);
-    ogs_assert(session);
     ogs_assert(NFProfile);
 
     if (!NFProfile) {
         ogs_error("No NFProfile");
-        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
-                message, "No NFProfile", NULL);
+        if (session)
+            ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                        message, "No NFProfile", NULL);
         return false;
     }
 
     if (!NFProfile->nf_instance_id) {
         ogs_error("No NFProfile.NFInstanceId");
-        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
-                message, "NFProfile", "No NFInstanceId");
+        if (session)
+            ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                        message, "NFProfile", "No NFInstanceId");
         return false;
     }
 
     if (!NFProfile->nf_type) {
         ogs_error("No NFProfile.NFType");
-        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
-                message, "NFProfile", "No NFType");
+        if (session)
+            ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+                        message, "NFProfile", "No NFType");
         return false;
     }
 
     if (!NFProfile->nf_status) {
         ogs_error("No NFProfile.NFStatus");
-        ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
+        if (session)
+            ogs_sbi_server_send_error(session, OGS_SBI_HTTP_STATUS_BAD_REQUEST,
                 message, "NFProfile", "No NFStatus");
         return false;
     }

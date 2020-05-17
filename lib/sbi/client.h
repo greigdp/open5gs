@@ -32,7 +32,6 @@ extern "C" {
     do { \
         ogs_assert((__cTX)); \
         ogs_assert((__pCLIENT)); \
-        ogs_assert((__cTX)->client == NULL); \
         (__cTX)->client = __pCLIENT; \
     } while(0)
 typedef struct ogs_sbi_client_s {
