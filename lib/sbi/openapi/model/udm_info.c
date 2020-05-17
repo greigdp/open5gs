@@ -69,8 +69,8 @@ cJSON *OpenAPI_udm_info_convertToJSON(OpenAPI_udm_info_t *udm_info)
     }
 
     if (udm_info->supi_ranges) {
-        cJSON *supi_ranges = cJSON_AddArrayToObject(item, "supiRanges");
-        if (supi_ranges == NULL) {
+        cJSON *supi_rangesList = cJSON_AddArrayToObject(item, "supiRanges");
+        if (supi_rangesList == NULL) {
             ogs_error("OpenAPI_udm_info_convertToJSON() failed [supi_ranges]");
             goto end;
         }
@@ -83,14 +83,14 @@ cJSON *OpenAPI_udm_info_convertToJSON(OpenAPI_udm_info_t *udm_info)
                     ogs_error("OpenAPI_udm_info_convertToJSON() failed [supi_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(supi_ranges, itemLocal);
+                cJSON_AddItemToArray(supi_rangesList, itemLocal);
             }
         }
     }
 
     if (udm_info->gpsi_ranges) {
-        cJSON *gpsi_ranges = cJSON_AddArrayToObject(item, "gpsiRanges");
-        if (gpsi_ranges == NULL) {
+        cJSON *gpsi_rangesList = cJSON_AddArrayToObject(item, "gpsiRanges");
+        if (gpsi_rangesList == NULL) {
             ogs_error("OpenAPI_udm_info_convertToJSON() failed [gpsi_ranges]");
             goto end;
         }
@@ -103,14 +103,14 @@ cJSON *OpenAPI_udm_info_convertToJSON(OpenAPI_udm_info_t *udm_info)
                     ogs_error("OpenAPI_udm_info_convertToJSON() failed [gpsi_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(gpsi_ranges, itemLocal);
+                cJSON_AddItemToArray(gpsi_rangesList, itemLocal);
             }
         }
     }
 
     if (udm_info->external_group_identifiers_ranges) {
-        cJSON *external_group_identifiers_ranges = cJSON_AddArrayToObject(item, "externalGroupIdentifiersRanges");
-        if (external_group_identifiers_ranges == NULL) {
+        cJSON *external_group_identifiers_rangesList = cJSON_AddArrayToObject(item, "externalGroupIdentifiersRanges");
+        if (external_group_identifiers_rangesList == NULL) {
             ogs_error("OpenAPI_udm_info_convertToJSON() failed [external_group_identifiers_ranges]");
             goto end;
         }
@@ -123,7 +123,7 @@ cJSON *OpenAPI_udm_info_convertToJSON(OpenAPI_udm_info_t *udm_info)
                     ogs_error("OpenAPI_udm_info_convertToJSON() failed [external_group_identifiers_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(external_group_identifiers_ranges, itemLocal);
+                cJSON_AddItemToArray(external_group_identifiers_rangesList, itemLocal);
             }
         }
     }

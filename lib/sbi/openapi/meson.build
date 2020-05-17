@@ -90,6 +90,16 @@ libsbi_openapi_sources = files('''
     model/up_interface_type.c
     model/upf_info.c
     model/uri_scheme.c
+
+    model/atom.c
+    model/cnf.c
+    model/cnf_unit.c
+    model/complex_query.c
+    model/dnf.c
+    model/dnf_unit.c
+    model/search_result.c
+    model/stored_search_result.c
+
 '''.split())
 
 libsbi_openapi_inc = include_directories('.')

@@ -129,8 +129,8 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
         ogs_error("OpenAPI_nf_service_convertToJSON() failed [versions]");
         goto end;
     }
-    cJSON *versions = cJSON_AddArrayToObject(item, "versions");
-    if (versions == NULL) {
+    cJSON *versionsList = cJSON_AddArrayToObject(item, "versions");
+    if (versionsList == NULL) {
         ogs_error("OpenAPI_nf_service_convertToJSON() failed [versions]");
         goto end;
     }
@@ -143,7 +143,7 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
                 ogs_error("OpenAPI_nf_service_convertToJSON() failed [versions]");
                 goto end;
             }
-            cJSON_AddItemToArray(versions, itemLocal);
+            cJSON_AddItemToArray(versionsList, itemLocal);
         }
     }
 
@@ -180,8 +180,8 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
     }
 
     if (nf_service->ip_end_points) {
-        cJSON *ip_end_points = cJSON_AddArrayToObject(item, "ipEndPoints");
-        if (ip_end_points == NULL) {
+        cJSON *ip_end_pointsList = cJSON_AddArrayToObject(item, "ipEndPoints");
+        if (ip_end_pointsList == NULL) {
             ogs_error("OpenAPI_nf_service_convertToJSON() failed [ip_end_points]");
             goto end;
         }
@@ -194,7 +194,7 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
                     ogs_error("OpenAPI_nf_service_convertToJSON() failed [ip_end_points]");
                     goto end;
                 }
-                cJSON_AddItemToArray(ip_end_points, itemLocal);
+                cJSON_AddItemToArray(ip_end_pointsList, itemLocal);
             }
         }
     }
@@ -207,8 +207,8 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
     }
 
     if (nf_service->default_notification_subscriptions) {
-        cJSON *default_notification_subscriptions = cJSON_AddArrayToObject(item, "defaultNotificationSubscriptions");
-        if (default_notification_subscriptions == NULL) {
+        cJSON *default_notification_subscriptionsList = cJSON_AddArrayToObject(item, "defaultNotificationSubscriptions");
+        if (default_notification_subscriptionsList == NULL) {
             ogs_error("OpenAPI_nf_service_convertToJSON() failed [default_notification_subscriptions]");
             goto end;
         }
@@ -221,14 +221,14 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
                     ogs_error("OpenAPI_nf_service_convertToJSON() failed [default_notification_subscriptions]");
                     goto end;
                 }
-                cJSON_AddItemToArray(default_notification_subscriptions, itemLocal);
+                cJSON_AddItemToArray(default_notification_subscriptionsList, itemLocal);
             }
         }
     }
 
     if (nf_service->allowed_plmns) {
-        cJSON *allowed_plmns = cJSON_AddArrayToObject(item, "allowedPlmns");
-        if (allowed_plmns == NULL) {
+        cJSON *allowed_plmnsList = cJSON_AddArrayToObject(item, "allowedPlmns");
+        if (allowed_plmnsList == NULL) {
             ogs_error("OpenAPI_nf_service_convertToJSON() failed [allowed_plmns]");
             goto end;
         }
@@ -241,7 +241,7 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
                     ogs_error("OpenAPI_nf_service_convertToJSON() failed [allowed_plmns]");
                     goto end;
                 }
-                cJSON_AddItemToArray(allowed_plmns, itemLocal);
+                cJSON_AddItemToArray(allowed_plmnsList, itemLocal);
             }
         }
     }
@@ -278,8 +278,8 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
     }
 
     if (nf_service->allowed_nssais) {
-        cJSON *allowed_nssais = cJSON_AddArrayToObject(item, "allowedNssais");
-        if (allowed_nssais == NULL) {
+        cJSON *allowed_nssaisList = cJSON_AddArrayToObject(item, "allowedNssais");
+        if (allowed_nssaisList == NULL) {
             ogs_error("OpenAPI_nf_service_convertToJSON() failed [allowed_nssais]");
             goto end;
         }
@@ -292,7 +292,7 @@ cJSON *OpenAPI_nf_service_convertToJSON(OpenAPI_nf_service_t *nf_service)
                     ogs_error("OpenAPI_nf_service_convertToJSON() failed [allowed_nssais]");
                     goto end;
                 }
-                cJSON_AddItemToArray(allowed_nssais, itemLocal);
+                cJSON_AddItemToArray(allowed_nssaisList, itemLocal);
             }
         }
     }

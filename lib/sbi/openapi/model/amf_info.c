@@ -95,8 +95,8 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
         ogs_error("OpenAPI_amf_info_convertToJSON() failed [guami_list]");
         goto end;
     }
-    cJSON *guami_list = cJSON_AddArrayToObject(item, "guamiList");
-    if (guami_list == NULL) {
+    cJSON *guami_listList = cJSON_AddArrayToObject(item, "guamiList");
+    if (guami_listList == NULL) {
         ogs_error("OpenAPI_amf_info_convertToJSON() failed [guami_list]");
         goto end;
     }
@@ -109,13 +109,13 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
                 ogs_error("OpenAPI_amf_info_convertToJSON() failed [guami_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(guami_list, itemLocal);
+            cJSON_AddItemToArray(guami_listList, itemLocal);
         }
     }
 
     if (amf_info->tai_list) {
-        cJSON *tai_list = cJSON_AddArrayToObject(item, "taiList");
-        if (tai_list == NULL) {
+        cJSON *tai_listList = cJSON_AddArrayToObject(item, "taiList");
+        if (tai_listList == NULL) {
             ogs_error("OpenAPI_amf_info_convertToJSON() failed [tai_list]");
             goto end;
         }
@@ -128,14 +128,14 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
                     ogs_error("OpenAPI_amf_info_convertToJSON() failed [tai_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(tai_list, itemLocal);
+                cJSON_AddItemToArray(tai_listList, itemLocal);
             }
         }
     }
 
     if (amf_info->tai_range_list) {
-        cJSON *tai_range_list = cJSON_AddArrayToObject(item, "taiRangeList");
-        if (tai_range_list == NULL) {
+        cJSON *tai_range_listList = cJSON_AddArrayToObject(item, "taiRangeList");
+        if (tai_range_listList == NULL) {
             ogs_error("OpenAPI_amf_info_convertToJSON() failed [tai_range_list]");
             goto end;
         }
@@ -148,14 +148,14 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
                     ogs_error("OpenAPI_amf_info_convertToJSON() failed [tai_range_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(tai_range_list, itemLocal);
+                cJSON_AddItemToArray(tai_range_listList, itemLocal);
             }
         }
     }
 
     if (amf_info->backup_info_amf_failure) {
-        cJSON *backup_info_amf_failure = cJSON_AddArrayToObject(item, "backupInfoAmfFailure");
-        if (backup_info_amf_failure == NULL) {
+        cJSON *backup_info_amf_failureList = cJSON_AddArrayToObject(item, "backupInfoAmfFailure");
+        if (backup_info_amf_failureList == NULL) {
             ogs_error("OpenAPI_amf_info_convertToJSON() failed [backup_info_amf_failure]");
             goto end;
         }
@@ -168,14 +168,14 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
                     ogs_error("OpenAPI_amf_info_convertToJSON() failed [backup_info_amf_failure]");
                     goto end;
                 }
-                cJSON_AddItemToArray(backup_info_amf_failure, itemLocal);
+                cJSON_AddItemToArray(backup_info_amf_failureList, itemLocal);
             }
         }
     }
 
     if (amf_info->backup_info_amf_removal) {
-        cJSON *backup_info_amf_removal = cJSON_AddArrayToObject(item, "backupInfoAmfRemoval");
-        if (backup_info_amf_removal == NULL) {
+        cJSON *backup_info_amf_removalList = cJSON_AddArrayToObject(item, "backupInfoAmfRemoval");
+        if (backup_info_amf_removalList == NULL) {
             ogs_error("OpenAPI_amf_info_convertToJSON() failed [backup_info_amf_removal]");
             goto end;
         }
@@ -188,7 +188,7 @@ cJSON *OpenAPI_amf_info_convertToJSON(OpenAPI_amf_info_t *amf_info)
                     ogs_error("OpenAPI_amf_info_convertToJSON() failed [backup_info_amf_removal]");
                     goto end;
                 }
-                cJSON_AddItemToArray(backup_info_amf_removal, itemLocal);
+                cJSON_AddItemToArray(backup_info_amf_removalList, itemLocal);
             }
         }
     }

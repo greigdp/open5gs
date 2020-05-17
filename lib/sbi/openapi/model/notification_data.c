@@ -80,8 +80,8 @@ cJSON *OpenAPI_notification_data_convertToJSON(OpenAPI_notification_data_t *noti
     }
 
     if (notification_data->profile_changes) {
-        cJSON *profile_changes = cJSON_AddArrayToObject(item, "profileChanges");
-        if (profile_changes == NULL) {
+        cJSON *profile_changesList = cJSON_AddArrayToObject(item, "profileChanges");
+        if (profile_changesList == NULL) {
             ogs_error("OpenAPI_notification_data_convertToJSON() failed [profile_changes]");
             goto end;
         }
@@ -94,7 +94,7 @@ cJSON *OpenAPI_notification_data_convertToJSON(OpenAPI_notification_data_t *noti
                     ogs_error("OpenAPI_notification_data_convertToJSON() failed [profile_changes]");
                     goto end;
                 }
-                cJSON_AddItemToArray(profile_changes, itemLocal);
+                cJSON_AddItemToArray(profile_changesList, itemLocal);
             }
         }
     }

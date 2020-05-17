@@ -85,8 +85,8 @@ cJSON *OpenAPI_pcf_info_convertToJSON(OpenAPI_pcf_info_t *pcf_info)
     }
 
     if (pcf_info->supi_ranges) {
-        cJSON *supi_ranges = cJSON_AddArrayToObject(item, "supiRanges");
-        if (supi_ranges == NULL) {
+        cJSON *supi_rangesList = cJSON_AddArrayToObject(item, "supiRanges");
+        if (supi_rangesList == NULL) {
             ogs_error("OpenAPI_pcf_info_convertToJSON() failed [supi_ranges]");
             goto end;
         }
@@ -99,14 +99,14 @@ cJSON *OpenAPI_pcf_info_convertToJSON(OpenAPI_pcf_info_t *pcf_info)
                     ogs_error("OpenAPI_pcf_info_convertToJSON() failed [supi_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(supi_ranges, itemLocal);
+                cJSON_AddItemToArray(supi_rangesList, itemLocal);
             }
         }
     }
 
     if (pcf_info->gpsi_ranges) {
-        cJSON *gpsi_ranges = cJSON_AddArrayToObject(item, "gpsiRanges");
-        if (gpsi_ranges == NULL) {
+        cJSON *gpsi_rangesList = cJSON_AddArrayToObject(item, "gpsiRanges");
+        if (gpsi_rangesList == NULL) {
             ogs_error("OpenAPI_pcf_info_convertToJSON() failed [gpsi_ranges]");
             goto end;
         }
@@ -119,7 +119,7 @@ cJSON *OpenAPI_pcf_info_convertToJSON(OpenAPI_pcf_info_t *pcf_info)
                     ogs_error("OpenAPI_pcf_info_convertToJSON() failed [gpsi_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(gpsi_ranges, itemLocal);
+                cJSON_AddItemToArray(gpsi_rangesList, itemLocal);
             }
         }
     }

@@ -375,7 +375,9 @@ components:
       properties:
         attr:
           type: string
-        value: {}
+#        value: {}
+        value:
+          type: string
         negative:
           type: boolean
     NFDiscFactors:

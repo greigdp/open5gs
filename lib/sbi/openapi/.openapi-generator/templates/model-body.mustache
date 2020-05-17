@@ -365,8 +365,8 @@ cJSON *OpenAPI_{{classname}}_convertToJSON(OpenAPI_{{classname}}_t *{{classname}
             {{/isPrimitiveType}}
             {{^isPrimitiveType}}
                 {{^isEnum}}
-                    cJSON *{{{name}}} = cJSON_AddArrayToObject(item, "{{{baseName}}}");
-                    if ({{{name}}} == NULL) {
+                    cJSON *{{{name}}}List = cJSON_AddArrayToObject(item, "{{{baseName}}}");
+                    if ({{{name}}}List == NULL) {
                         ogs_error("OpenAPI_{{classname}}_convertToJSON() failed [{{{name}}}]");
                         goto end;
                     }
@@ -379,7 +379,7 @@ cJSON *OpenAPI_{{classname}}_convertToJSON(OpenAPI_{{classname}}_t *{{classname}
                                 ogs_error("OpenAPI_{{classname}}_convertToJSON() failed [{{{name}}}]");
                                 goto end;
                             }
-                            cJSON_AddItemToArray({{{name}}}, itemLocal);
+                            cJSON_AddItemToArray({{{name}}}List, itemLocal);
                         }
                     }
                 {{/isEnum}}

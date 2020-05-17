@@ -50,8 +50,8 @@ cJSON *OpenAPI_network_slice_cond_convertToJSON(OpenAPI_network_slice_cond_t *ne
         ogs_error("OpenAPI_network_slice_cond_convertToJSON() failed [snssai_list]");
         goto end;
     }
-    cJSON *snssai_list = cJSON_AddArrayToObject(item, "snssaiList");
-    if (snssai_list == NULL) {
+    cJSON *snssai_listList = cJSON_AddArrayToObject(item, "snssaiList");
+    if (snssai_listList == NULL) {
         ogs_error("OpenAPI_network_slice_cond_convertToJSON() failed [snssai_list]");
         goto end;
     }
@@ -64,7 +64,7 @@ cJSON *OpenAPI_network_slice_cond_convertToJSON(OpenAPI_network_slice_cond_t *ne
                 ogs_error("OpenAPI_network_slice_cond_convertToJSON() failed [snssai_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(snssai_list, itemLocal);
+            cJSON_AddItemToArray(snssai_listList, itemLocal);
         }
     }
 

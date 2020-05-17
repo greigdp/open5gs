@@ -271,8 +271,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->plmn_list) {
-        cJSON *plmn_list = cJSON_AddArrayToObject(item, "plmnList");
-        if (plmn_list == NULL) {
+        cJSON *plmn_listList = cJSON_AddArrayToObject(item, "plmnList");
+        if (plmn_listList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [plmn_list]");
             goto end;
         }
@@ -285,14 +285,14 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [plmn_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(plmn_list, itemLocal);
+                cJSON_AddItemToArray(plmn_listList, itemLocal);
             }
         }
     }
 
     if (nf_profile->s_nssais) {
-        cJSON *s_nssais = cJSON_AddArrayToObject(item, "sNssais");
-        if (s_nssais == NULL) {
+        cJSON *s_nssaisList = cJSON_AddArrayToObject(item, "sNssais");
+        if (s_nssaisList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [s_nssais]");
             goto end;
         }
@@ -305,14 +305,14 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [s_nssais]");
                     goto end;
                 }
-                cJSON_AddItemToArray(s_nssais, itemLocal);
+                cJSON_AddItemToArray(s_nssaisList, itemLocal);
             }
         }
     }
 
     if (nf_profile->per_plmn_snssai_list) {
-        cJSON *per_plmn_snssai_list = cJSON_AddArrayToObject(item, "perPlmnSnssaiList");
-        if (per_plmn_snssai_list == NULL) {
+        cJSON *per_plmn_snssai_listList = cJSON_AddArrayToObject(item, "perPlmnSnssaiList");
+        if (per_plmn_snssai_listList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [per_plmn_snssai_list]");
             goto end;
         }
@@ -325,7 +325,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [per_plmn_snssai_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(per_plmn_snssai_list, itemLocal);
+                cJSON_AddItemToArray(per_plmn_snssai_listList, itemLocal);
             }
         }
     }
@@ -393,8 +393,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->allowed_plmns) {
-        cJSON *allowed_plmns = cJSON_AddArrayToObject(item, "allowedPlmns");
-        if (allowed_plmns == NULL) {
+        cJSON *allowed_plmnsList = cJSON_AddArrayToObject(item, "allowedPlmns");
+        if (allowed_plmnsList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [allowed_plmns]");
             goto end;
         }
@@ -407,7 +407,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [allowed_plmns]");
                     goto end;
                 }
-                cJSON_AddItemToArray(allowed_plmns, itemLocal);
+                cJSON_AddItemToArray(allowed_plmnsList, itemLocal);
             }
         }
     }
@@ -444,8 +444,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->allowed_nssais) {
-        cJSON *allowed_nssais = cJSON_AddArrayToObject(item, "allowedNssais");
-        if (allowed_nssais == NULL) {
+        cJSON *allowed_nssaisList = cJSON_AddArrayToObject(item, "allowedNssais");
+        if (allowed_nssaisList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [allowed_nssais]");
             goto end;
         }
@@ -458,7 +458,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [allowed_nssais]");
                     goto end;
                 }
-                cJSON_AddItemToArray(allowed_nssais, itemLocal);
+                cJSON_AddItemToArray(allowed_nssaisList, itemLocal);
             }
         }
     }
@@ -505,8 +505,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->udr_info_ext) {
-        cJSON *udr_info_ext = cJSON_AddArrayToObject(item, "udrInfoExt");
-        if (udr_info_ext == NULL) {
+        cJSON *udr_info_extList = cJSON_AddArrayToObject(item, "udrInfoExt");
+        if (udr_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [udr_info_ext]");
             goto end;
         }
@@ -519,7 +519,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [udr_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(udr_info_ext, itemLocal);
+                cJSON_AddItemToArray(udr_info_extList, itemLocal);
             }
         }
     }
@@ -538,8 +538,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->udm_info_ext) {
-        cJSON *udm_info_ext = cJSON_AddArrayToObject(item, "udmInfoExt");
-        if (udm_info_ext == NULL) {
+        cJSON *udm_info_extList = cJSON_AddArrayToObject(item, "udmInfoExt");
+        if (udm_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [udm_info_ext]");
             goto end;
         }
@@ -552,7 +552,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [udm_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(udm_info_ext, itemLocal);
+                cJSON_AddItemToArray(udm_info_extList, itemLocal);
             }
         }
     }
@@ -571,8 +571,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->ausf_info_ext) {
-        cJSON *ausf_info_ext = cJSON_AddArrayToObject(item, "ausfInfoExt");
-        if (ausf_info_ext == NULL) {
+        cJSON *ausf_info_extList = cJSON_AddArrayToObject(item, "ausfInfoExt");
+        if (ausf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [ausf_info_ext]");
             goto end;
         }
@@ -585,7 +585,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [ausf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(ausf_info_ext, itemLocal);
+                cJSON_AddItemToArray(ausf_info_extList, itemLocal);
             }
         }
     }
@@ -604,8 +604,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->amf_info_ext) {
-        cJSON *amf_info_ext = cJSON_AddArrayToObject(item, "amfInfoExt");
-        if (amf_info_ext == NULL) {
+        cJSON *amf_info_extList = cJSON_AddArrayToObject(item, "amfInfoExt");
+        if (amf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [amf_info_ext]");
             goto end;
         }
@@ -618,7 +618,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [amf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(amf_info_ext, itemLocal);
+                cJSON_AddItemToArray(amf_info_extList, itemLocal);
             }
         }
     }
@@ -637,8 +637,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->smf_info_ext) {
-        cJSON *smf_info_ext = cJSON_AddArrayToObject(item, "smfInfoExt");
-        if (smf_info_ext == NULL) {
+        cJSON *smf_info_extList = cJSON_AddArrayToObject(item, "smfInfoExt");
+        if (smf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [smf_info_ext]");
             goto end;
         }
@@ -651,7 +651,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [smf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(smf_info_ext, itemLocal);
+                cJSON_AddItemToArray(smf_info_extList, itemLocal);
             }
         }
     }
@@ -670,8 +670,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->upf_info_ext) {
-        cJSON *upf_info_ext = cJSON_AddArrayToObject(item, "upfInfoExt");
-        if (upf_info_ext == NULL) {
+        cJSON *upf_info_extList = cJSON_AddArrayToObject(item, "upfInfoExt");
+        if (upf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [upf_info_ext]");
             goto end;
         }
@@ -684,7 +684,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [upf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(upf_info_ext, itemLocal);
+                cJSON_AddItemToArray(upf_info_extList, itemLocal);
             }
         }
     }
@@ -703,8 +703,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->pcf_info_ext) {
-        cJSON *pcf_info_ext = cJSON_AddArrayToObject(item, "pcfInfoExt");
-        if (pcf_info_ext == NULL) {
+        cJSON *pcf_info_extList = cJSON_AddArrayToObject(item, "pcfInfoExt");
+        if (pcf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [pcf_info_ext]");
             goto end;
         }
@@ -717,7 +717,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [pcf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(pcf_info_ext, itemLocal);
+                cJSON_AddItemToArray(pcf_info_extList, itemLocal);
             }
         }
     }
@@ -736,8 +736,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->bsf_info_ext) {
-        cJSON *bsf_info_ext = cJSON_AddArrayToObject(item, "bsfInfoExt");
-        if (bsf_info_ext == NULL) {
+        cJSON *bsf_info_extList = cJSON_AddArrayToObject(item, "bsfInfoExt");
+        if (bsf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [bsf_info_ext]");
             goto end;
         }
@@ -750,7 +750,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [bsf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(bsf_info_ext, itemLocal);
+                cJSON_AddItemToArray(bsf_info_extList, itemLocal);
             }
         }
     }
@@ -769,8 +769,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->chf_info_ext) {
-        cJSON *chf_info_ext = cJSON_AddArrayToObject(item, "chfInfoExt");
-        if (chf_info_ext == NULL) {
+        cJSON *chf_info_extList = cJSON_AddArrayToObject(item, "chfInfoExt");
+        if (chf_info_extList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [chf_info_ext]");
             goto end;
         }
@@ -783,7 +783,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [chf_info_ext]");
                     goto end;
                 }
-                cJSON_AddItemToArray(chf_info_ext, itemLocal);
+                cJSON_AddItemToArray(chf_info_extList, itemLocal);
             }
         }
     }
@@ -842,8 +842,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->nf_services) {
-        cJSON *nf_services = cJSON_AddArrayToObject(item, "nfServices");
-        if (nf_services == NULL) {
+        cJSON *nf_servicesList = cJSON_AddArrayToObject(item, "nfServices");
+        if (nf_servicesList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [nf_services]");
             goto end;
         }
@@ -856,7 +856,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [nf_services]");
                     goto end;
                 }
-                cJSON_AddItemToArray(nf_services, itemLocal);
+                cJSON_AddItemToArray(nf_servicesList, itemLocal);
             }
         }
     }
@@ -876,8 +876,8 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
     }
 
     if (nf_profile->default_notification_subscriptions) {
-        cJSON *default_notification_subscriptions = cJSON_AddArrayToObject(item, "defaultNotificationSubscriptions");
-        if (default_notification_subscriptions == NULL) {
+        cJSON *default_notification_subscriptionsList = cJSON_AddArrayToObject(item, "defaultNotificationSubscriptions");
+        if (default_notification_subscriptionsList == NULL) {
             ogs_error("OpenAPI_nf_profile_convertToJSON() failed [default_notification_subscriptions]");
             goto end;
         }
@@ -890,7 +890,7 @@ cJSON *OpenAPI_nf_profile_convertToJSON(OpenAPI_nf_profile_t *nf_profile)
                     ogs_error("OpenAPI_nf_profile_convertToJSON() failed [default_notification_subscriptions]");
                     goto end;
                 }
-                cJSON_AddItemToArray(default_notification_subscriptions, itemLocal);
+                cJSON_AddItemToArray(default_notification_subscriptionsList, itemLocal);
             }
         }
     }

@@ -75,8 +75,8 @@ cJSON *OpenAPI_dnn_upf_info_item_convertToJSON(OpenAPI_dnn_upf_info_item_t *dnn_
     }
 
     if (dnn_upf_info_item->pdu_session_types) {
-        cJSON *pdu_session_types = cJSON_AddArrayToObject(item, "pduSessionTypes");
-        if (pdu_session_types == NULL) {
+        cJSON *pdu_session_typesList = cJSON_AddArrayToObject(item, "pduSessionTypes");
+        if (pdu_session_typesList == NULL) {
             ogs_error("OpenAPI_dnn_upf_info_item_convertToJSON() failed [pdu_session_types]");
             goto end;
         }
@@ -89,7 +89,7 @@ cJSON *OpenAPI_dnn_upf_info_item_convertToJSON(OpenAPI_dnn_upf_info_item_t *dnn_
                     ogs_error("OpenAPI_dnn_upf_info_item_convertToJSON() failed [pdu_session_types]");
                     goto end;
                 }
-                cJSON_AddItemToArray(pdu_session_types, itemLocal);
+                cJSON_AddItemToArray(pdu_session_typesList, itemLocal);
             }
         }
     }

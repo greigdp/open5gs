@@ -152,8 +152,8 @@ cJSON *OpenAPI_subscription_data_convertToJSON(OpenAPI_subscription_data_t *subs
     }
 
     if (subscription_data->req_snssais) {
-        cJSON *req_snssais = cJSON_AddArrayToObject(item, "reqSnssais");
-        if (req_snssais == NULL) {
+        cJSON *req_snssaisList = cJSON_AddArrayToObject(item, "reqSnssais");
+        if (req_snssaisList == NULL) {
             ogs_error("OpenAPI_subscription_data_convertToJSON() failed [req_snssais]");
             goto end;
         }
@@ -166,7 +166,7 @@ cJSON *OpenAPI_subscription_data_convertToJSON(OpenAPI_subscription_data_t *subs
                     ogs_error("OpenAPI_subscription_data_convertToJSON() failed [req_snssais]");
                     goto end;
                 }
-                cJSON_AddItemToArray(req_snssais, itemLocal);
+                cJSON_AddItemToArray(req_snssaisList, itemLocal);
             }
         }
     }

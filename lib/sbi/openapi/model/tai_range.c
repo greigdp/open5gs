@@ -62,8 +62,8 @@ cJSON *OpenAPI_tai_range_convertToJSON(OpenAPI_tai_range_t *tai_range)
         ogs_error("OpenAPI_tai_range_convertToJSON() failed [tac_range_list]");
         goto end;
     }
-    cJSON *tac_range_list = cJSON_AddArrayToObject(item, "tacRangeList");
-    if (tac_range_list == NULL) {
+    cJSON *tac_range_listList = cJSON_AddArrayToObject(item, "tacRangeList");
+    if (tac_range_listList == NULL) {
         ogs_error("OpenAPI_tai_range_convertToJSON() failed [tac_range_list]");
         goto end;
     }
@@ -76,7 +76,7 @@ cJSON *OpenAPI_tai_range_convertToJSON(OpenAPI_tai_range_t *tai_range)
                 ogs_error("OpenAPI_tai_range_convertToJSON() failed [tac_range_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(tac_range_list, itemLocal);
+            cJSON_AddItemToArray(tac_range_listList, itemLocal);
         }
     }
 

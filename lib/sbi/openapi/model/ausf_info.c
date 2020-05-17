@@ -57,8 +57,8 @@ cJSON *OpenAPI_ausf_info_convertToJSON(OpenAPI_ausf_info_t *ausf_info)
     }
 
     if (ausf_info->supi_ranges) {
-        cJSON *supi_ranges = cJSON_AddArrayToObject(item, "supiRanges");
-        if (supi_ranges == NULL) {
+        cJSON *supi_rangesList = cJSON_AddArrayToObject(item, "supiRanges");
+        if (supi_rangesList == NULL) {
             ogs_error("OpenAPI_ausf_info_convertToJSON() failed [supi_ranges]");
             goto end;
         }
@@ -71,7 +71,7 @@ cJSON *OpenAPI_ausf_info_convertToJSON(OpenAPI_ausf_info_t *ausf_info)
                     ogs_error("OpenAPI_ausf_info_convertToJSON() failed [supi_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(supi_ranges, itemLocal);
+                cJSON_AddItemToArray(supi_rangesList, itemLocal);
             }
         }
     }

@@ -44,8 +44,8 @@ cJSON *OpenAPI_guami_list_cond_convertToJSON(OpenAPI_guami_list_cond_t *guami_li
         ogs_error("OpenAPI_guami_list_cond_convertToJSON() failed [guami_list]");
         goto end;
     }
-    cJSON *guami_list = cJSON_AddArrayToObject(item, "guamiList");
-    if (guami_list == NULL) {
+    cJSON *guami_listList = cJSON_AddArrayToObject(item, "guamiList");
+    if (guami_listList == NULL) {
         ogs_error("OpenAPI_guami_list_cond_convertToJSON() failed [guami_list]");
         goto end;
     }
@@ -58,7 +58,7 @@ cJSON *OpenAPI_guami_list_cond_convertToJSON(OpenAPI_guami_list_cond_t *guami_li
                 ogs_error("OpenAPI_guami_list_cond_convertToJSON() failed [guami_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(guami_list, itemLocal);
+            cJSON_AddItemToArray(guami_listList, itemLocal);
         }
     }
 

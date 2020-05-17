@@ -62,8 +62,8 @@ cJSON *OpenAPI_snssai_upf_info_item_convertToJSON(OpenAPI_snssai_upf_info_item_t
         ogs_error("OpenAPI_snssai_upf_info_item_convertToJSON() failed [dnn_upf_info_list]");
         goto end;
     }
-    cJSON *dnn_upf_info_list = cJSON_AddArrayToObject(item, "dnnUpfInfoList");
-    if (dnn_upf_info_list == NULL) {
+    cJSON *dnn_upf_info_listList = cJSON_AddArrayToObject(item, "dnnUpfInfoList");
+    if (dnn_upf_info_listList == NULL) {
         ogs_error("OpenAPI_snssai_upf_info_item_convertToJSON() failed [dnn_upf_info_list]");
         goto end;
     }
@@ -76,7 +76,7 @@ cJSON *OpenAPI_snssai_upf_info_item_convertToJSON(OpenAPI_snssai_upf_info_item_t
                 ogs_error("OpenAPI_snssai_upf_info_item_convertToJSON() failed [dnn_upf_info_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(dnn_upf_info_list, itemLocal);
+            cJSON_AddItemToArray(dnn_upf_info_listList, itemLocal);
         }
     }
 

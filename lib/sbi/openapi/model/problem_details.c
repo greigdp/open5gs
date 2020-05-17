@@ -103,8 +103,8 @@ cJSON *OpenAPI_problem_details_convertToJSON(OpenAPI_problem_details_t *problem_
     }
 
     if (problem_details->invalid_params) {
-        cJSON *invalid_params = cJSON_AddArrayToObject(item, "invalidParams");
-        if (invalid_params == NULL) {
+        cJSON *invalid_paramsList = cJSON_AddArrayToObject(item, "invalidParams");
+        if (invalid_paramsList == NULL) {
             ogs_error("OpenAPI_problem_details_convertToJSON() failed [invalid_params]");
             goto end;
         }
@@ -117,7 +117,7 @@ cJSON *OpenAPI_problem_details_convertToJSON(OpenAPI_problem_details_t *problem_
                     ogs_error("OpenAPI_problem_details_convertToJSON() failed [invalid_params]");
                     goto end;
                 }
-                cJSON_AddItemToArray(invalid_params, itemLocal);
+                cJSON_AddItemToArray(invalid_paramsList, itemLocal);
             }
         }
     }

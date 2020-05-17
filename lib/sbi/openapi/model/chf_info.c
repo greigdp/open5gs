@@ -53,8 +53,8 @@ cJSON *OpenAPI_chf_info_convertToJSON(OpenAPI_chf_info_t *chf_info)
 
     item = cJSON_CreateObject();
     if (chf_info->supi_range_list) {
-        cJSON *supi_range_list = cJSON_AddArrayToObject(item, "supiRangeList");
-        if (supi_range_list == NULL) {
+        cJSON *supi_range_listList = cJSON_AddArrayToObject(item, "supiRangeList");
+        if (supi_range_listList == NULL) {
             ogs_error("OpenAPI_chf_info_convertToJSON() failed [supi_range_list]");
             goto end;
         }
@@ -67,14 +67,14 @@ cJSON *OpenAPI_chf_info_convertToJSON(OpenAPI_chf_info_t *chf_info)
                     ogs_error("OpenAPI_chf_info_convertToJSON() failed [supi_range_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(supi_range_list, itemLocal);
+                cJSON_AddItemToArray(supi_range_listList, itemLocal);
             }
         }
     }
 
     if (chf_info->gpsi_range_list) {
-        cJSON *gpsi_range_list = cJSON_AddArrayToObject(item, "gpsiRangeList");
-        if (gpsi_range_list == NULL) {
+        cJSON *gpsi_range_listList = cJSON_AddArrayToObject(item, "gpsiRangeList");
+        if (gpsi_range_listList == NULL) {
             ogs_error("OpenAPI_chf_info_convertToJSON() failed [gpsi_range_list]");
             goto end;
         }
@@ -87,14 +87,14 @@ cJSON *OpenAPI_chf_info_convertToJSON(OpenAPI_chf_info_t *chf_info)
                     ogs_error("OpenAPI_chf_info_convertToJSON() failed [gpsi_range_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(gpsi_range_list, itemLocal);
+                cJSON_AddItemToArray(gpsi_range_listList, itemLocal);
             }
         }
     }
 
     if (chf_info->plmn_range_list) {
-        cJSON *plmn_range_list = cJSON_AddArrayToObject(item, "plmnRangeList");
-        if (plmn_range_list == NULL) {
+        cJSON *plmn_range_listList = cJSON_AddArrayToObject(item, "plmnRangeList");
+        if (plmn_range_listList == NULL) {
             ogs_error("OpenAPI_chf_info_convertToJSON() failed [plmn_range_list]");
             goto end;
         }
@@ -107,7 +107,7 @@ cJSON *OpenAPI_chf_info_convertToJSON(OpenAPI_chf_info_t *chf_info)
                     ogs_error("OpenAPI_chf_info_convertToJSON() failed [plmn_range_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(plmn_range_list, itemLocal);
+                cJSON_AddItemToArray(plmn_range_listList, itemLocal);
             }
         }
     }

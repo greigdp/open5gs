@@ -62,8 +62,8 @@ cJSON *OpenAPI_smf_info_convertToJSON(OpenAPI_smf_info_t *smf_info)
         ogs_error("OpenAPI_smf_info_convertToJSON() failed [s_nssai_smf_info_list]");
         goto end;
     }
-    cJSON *s_nssai_smf_info_list = cJSON_AddArrayToObject(item, "sNssaiSmfInfoList");
-    if (s_nssai_smf_info_list == NULL) {
+    cJSON *s_nssai_smf_info_listList = cJSON_AddArrayToObject(item, "sNssaiSmfInfoList");
+    if (s_nssai_smf_info_listList == NULL) {
         ogs_error("OpenAPI_smf_info_convertToJSON() failed [s_nssai_smf_info_list]");
         goto end;
     }
@@ -76,13 +76,13 @@ cJSON *OpenAPI_smf_info_convertToJSON(OpenAPI_smf_info_t *smf_info)
                 ogs_error("OpenAPI_smf_info_convertToJSON() failed [s_nssai_smf_info_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(s_nssai_smf_info_list, itemLocal);
+            cJSON_AddItemToArray(s_nssai_smf_info_listList, itemLocal);
         }
     }
 
     if (smf_info->tai_list) {
-        cJSON *tai_list = cJSON_AddArrayToObject(item, "taiList");
-        if (tai_list == NULL) {
+        cJSON *tai_listList = cJSON_AddArrayToObject(item, "taiList");
+        if (tai_listList == NULL) {
             ogs_error("OpenAPI_smf_info_convertToJSON() failed [tai_list]");
             goto end;
         }
@@ -95,14 +95,14 @@ cJSON *OpenAPI_smf_info_convertToJSON(OpenAPI_smf_info_t *smf_info)
                     ogs_error("OpenAPI_smf_info_convertToJSON() failed [tai_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(tai_list, itemLocal);
+                cJSON_AddItemToArray(tai_listList, itemLocal);
             }
         }
     }
 
     if (smf_info->tai_range_list) {
-        cJSON *tai_range_list = cJSON_AddArrayToObject(item, "taiRangeList");
-        if (tai_range_list == NULL) {
+        cJSON *tai_range_listList = cJSON_AddArrayToObject(item, "taiRangeList");
+        if (tai_range_listList == NULL) {
             ogs_error("OpenAPI_smf_info_convertToJSON() failed [tai_range_list]");
             goto end;
         }
@@ -115,7 +115,7 @@ cJSON *OpenAPI_smf_info_convertToJSON(OpenAPI_smf_info_t *smf_info)
                     ogs_error("OpenAPI_smf_info_convertToJSON() failed [tai_range_list]");
                     goto end;
                 }
-                cJSON_AddItemToArray(tai_range_list, itemLocal);
+                cJSON_AddItemToArray(tai_range_listList, itemLocal);
             }
         }
     }

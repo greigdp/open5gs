@@ -91,8 +91,8 @@ cJSON *OpenAPI_bsf_info_convertToJSON(OpenAPI_bsf_info_t *bsf_info)
     }
 
     if (bsf_info->ipv4_address_ranges) {
-        cJSON *ipv4_address_ranges = cJSON_AddArrayToObject(item, "ipv4AddressRanges");
-        if (ipv4_address_ranges == NULL) {
+        cJSON *ipv4_address_rangesList = cJSON_AddArrayToObject(item, "ipv4AddressRanges");
+        if (ipv4_address_rangesList == NULL) {
             ogs_error("OpenAPI_bsf_info_convertToJSON() failed [ipv4_address_ranges]");
             goto end;
         }
@@ -105,14 +105,14 @@ cJSON *OpenAPI_bsf_info_convertToJSON(OpenAPI_bsf_info_t *bsf_info)
                     ogs_error("OpenAPI_bsf_info_convertToJSON() failed [ipv4_address_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(ipv4_address_ranges, itemLocal);
+                cJSON_AddItemToArray(ipv4_address_rangesList, itemLocal);
             }
         }
     }
 
     if (bsf_info->ipv6_prefix_ranges) {
-        cJSON *ipv6_prefix_ranges = cJSON_AddArrayToObject(item, "ipv6PrefixRanges");
-        if (ipv6_prefix_ranges == NULL) {
+        cJSON *ipv6_prefix_rangesList = cJSON_AddArrayToObject(item, "ipv6PrefixRanges");
+        if (ipv6_prefix_rangesList == NULL) {
             ogs_error("OpenAPI_bsf_info_convertToJSON() failed [ipv6_prefix_ranges]");
             goto end;
         }
@@ -125,7 +125,7 @@ cJSON *OpenAPI_bsf_info_convertToJSON(OpenAPI_bsf_info_t *bsf_info)
                     ogs_error("OpenAPI_bsf_info_convertToJSON() failed [ipv6_prefix_ranges]");
                     goto end;
                 }
-                cJSON_AddItemToArray(ipv6_prefix_ranges, itemLocal);
+                cJSON_AddItemToArray(ipv6_prefix_rangesList, itemLocal);
             }
         }
     }

@@ -62,8 +62,8 @@ cJSON *OpenAPI_plmn_snssai_convertToJSON(OpenAPI_plmn_snssai_t *plmn_snssai)
         ogs_error("OpenAPI_plmn_snssai_convertToJSON() failed [s_nssai_list]");
         goto end;
     }
-    cJSON *s_nssai_list = cJSON_AddArrayToObject(item, "sNssaiList");
-    if (s_nssai_list == NULL) {
+    cJSON *s_nssai_listList = cJSON_AddArrayToObject(item, "sNssaiList");
+    if (s_nssai_listList == NULL) {
         ogs_error("OpenAPI_plmn_snssai_convertToJSON() failed [s_nssai_list]");
         goto end;
     }
@@ -76,7 +76,7 @@ cJSON *OpenAPI_plmn_snssai_convertToJSON(OpenAPI_plmn_snssai_t *plmn_snssai)
                 ogs_error("OpenAPI_plmn_snssai_convertToJSON() failed [s_nssai_list]");
                 goto end;
             }
-            cJSON_AddItemToArray(s_nssai_list, itemLocal);
+            cJSON_AddItemToArray(s_nssai_listList, itemLocal);
         }
     }
 
