@@ -47,8 +47,25 @@ void smf_event_final(void)
     ogs_pool_final(&pool);
 }
 
+static ogs_timer_t *t_termination_holding = NULL;
+
+static void timer_cb(void *data)
+{
+    ogs_timer_delete(t_termination_holding);
+}
+
 void smf_event_term(void)
 {
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
+        smf_nf_fsm_fini(nf_instance);
+
+    t_termination_holding = ogs_timer_add(
+            smf_self()->timer_mgr, timer_cb, NULL);
+    ogs_assert(t_termination_holding);
+    ogs_timer_start(t_termination_holding, ogs_time_from_msec(300));
+
     ogs_queue_term(smf_self()->queue);
     ogs_pollset_notify(smf_self()->pollset);
 }
