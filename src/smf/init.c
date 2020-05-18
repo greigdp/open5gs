@@ -73,13 +73,6 @@ int smf_initialize()
 
 static ogs_timer_t *t_termination_holding = NULL;
 
-static void smf_timer_termination_holding(void *data)
-{
-    ogs_timer_delete(t_termination_holding);
-    ogs_queue_term(smf_self()->queue);
-    ogs_pollset_notify(smf_self()->pollset);
-}
-
 static void smf_event_term2(void)
 {
     ogs_sbi_nf_instance_t *nf_instance = NULL;
@@ -87,8 +80,7 @@ static void smf_event_term2(void)
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
         smf_nf_fsm_fini(nf_instance);
 
-    t_termination_holding = ogs_timer_add(
-            smf_self()->timer_mgr, smf_timer_termination_holding, NULL);
+    t_termination_holding = ogs_timer_add(smf_self()->timer_mgr, NULL, NULL);
     ogs_assert(t_termination_holding);
     ogs_timer_start(t_termination_holding, ogs_time_from_msec(300));
 }
@@ -100,6 +92,11 @@ void smf_terminate(void)
     smf_event_term(); /* Terminate event */
 
     ogs_thread_destroy(thread);
+
+    smf_event_term2();
+    smf_main(NULL);
+
+    ogs_timer_delete(t_termination_holding);
 
     ogs_fsm_fini(&smf_sm, 0);
     ogs_fsm_delete(&smf_sm);
@@ -124,6 +121,7 @@ static void smf_main(void *data)
         ogs_pollset_poll(smf_self()->pollset,
                 ogs_timer_mgr_next(smf_self()->timer_mgr));
 
+#if 0
         /* Process the MESSAGE FIRST.
          *
          * For example, if UE Context Release Complete is received,
@@ -144,6 +142,7 @@ static void smf_main(void *data)
             ogs_fsm_dispatch(&smf_sm, e);
             smf_event_free(e);
         }
+#endif
 
         ogs_timer_mgr_expire(smf_self()->timer_mgr);
 

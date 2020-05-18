@@ -87,7 +87,6 @@ ogs_timer_t *ogs_timer_add(
 {
     ogs_timer_t *timer = NULL;
     ogs_assert(manager);
-    ogs_assert(cb);
 
     ogs_pool_alloc(&manager->pool, &timer);
     ogs_assert(timer);

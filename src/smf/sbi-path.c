@@ -97,13 +97,6 @@ int smf_sbi_open(void)
 
 void smf_sbi_close(void)
 {
-#if 1
-    ogs_sbi_nf_instance_t *nf_instance = NULL;
-
-    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
-        smf_nf_fsm_fini(nf_instance);
-#endif
-
     ogs_sbi_server_stop_all();
 }
 
