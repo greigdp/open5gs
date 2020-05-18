@@ -121,32 +121,19 @@ static void smf_main(void *data)
         ogs_pollset_poll(smf_self()->pollset,
                 ogs_timer_mgr_next(smf_self()->timer_mgr));
 
-#if 0
-        /* Process the MESSAGE FIRST.
+        /*
+         * After ogs_pollset_poll(), ogs_timer_mgr_expire() must be called.
          *
-         * For example, if UE Context Release Complete is received,
-         * the MME_TIMER_UE_CONTEXT_RELEASE is first stopped */
-        for ( ;; ) {
-            smf_event_t *e = NULL;
-
-            rv = ogs_queue_trypop(smf_self()->queue, (void**)&e);
-            ogs_assert(rv != OGS_ERROR);
-
-            if (rv == OGS_DONE)
-                return;
-
-            if (rv == OGS_RETRY)
-                break;
-
-            ogs_assert(e);
-            ogs_fsm_dispatch(&smf_sm, e);
-            smf_event_free(e);
-        }
-#endif
-
+         * The reason is why ogs_timer_mgr_next() can get the corrent value
+         * when ogs_timer_stop() is called internally in ogs_timer_mgr_expire().
+         *
+         * You should not use event-queue before ogs_timer_mgr_expire().
+         * In this case, ogs_timer_mgr_expire() does not work
+         * because 'if rv == OGS_DONE' statement is exiting and
+         * not calling ogs_timer_mgr_expire().
+         */
         ogs_timer_mgr_expire(smf_self()->timer_mgr);
 
-        /* AND THEN, process the TIMER. */
         for ( ;; ) {
             smf_event_t *e = NULL;
 
