@@ -96,8 +96,13 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
             CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
                 SWITCH(message.h.method)
                 CASE(OGS_SBI_HTTP_METHOD_GET)
-                    nrf_nnrf_handle_nf_retrieval(
-                            server, session, &message);
+                    if (message.h.resource.id) {
+                        nrf_nnrf_handle_nf_profile_retrieval(
+                                server, session, &message);
+                    } else {
+                        nrf_nnrf_handle_nf_list_retrieval(
+                                server, session, &message);
+                    }
                     break;
 
                 DEFAULT

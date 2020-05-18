@@ -236,7 +236,7 @@ bool nrf_nnrf_handle_nf_status_unsubscribe(ogs_sbi_server_t *server,
     return true;
 }
 
-bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
+bool nrf_nnrf_handle_nf_list_retrieval(ogs_sbi_server_t *server,
         ogs_sbi_session_t *session, ogs_sbi_message_t *recvmsg)
 {
     ogs_sbi_message_t sendmsg;
@@ -280,6 +280,43 @@ bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
     OpenAPI_list_free(links->items);
     ogs_free(links->self);
     ogs_free(links);
+
+    return true;
+}
+
+bool nrf_nnrf_handle_nf_profile_retrieval(ogs_sbi_server_t *server,
+        ogs_sbi_session_t *session, ogs_sbi_message_t *recvmsg)
+{
+    ogs_sbi_message_t sendmsg;
+    ogs_sbi_response_t *response = NULL;
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    OpenAPI_nf_profile_t *NFProfile = NULL;
+
+    ogs_assert(session);
+    ogs_assert(recvmsg);
+
+    ogs_assert(recvmsg->h.resource.id);
+    nf_instance = ogs_sbi_nf_instance_find(recvmsg->h.resource.id);
+    if (!nf_instance) {
+        ogs_error("Not found [%s]", recvmsg->h.resource.id);
+        ogs_sbi_server_send_error(session,
+                OGS_SBI_HTTP_STATUS_NOT_FOUND,
+                recvmsg, "Not found", recvmsg->h.resource.id);
+        return false;
+    }
+
+    NFProfile = ogs_sbi_nnrf_build_nf_profile(nf_instance);
+    ogs_assert(NFProfile);
+
+    memset(&sendmsg, 0, sizeof(sendmsg));
+    sendmsg.NFProfile = NFProfile;
+
+    response = ogs_sbi_build_response(&sendmsg);
+    ogs_assert(response);
+    ogs_sbi_server_send_response(session, response, OGS_SBI_HTTP_STATUS_OK);
+
+    ogs_sbi_nnrf_free_nf_profile(NFProfile);
 
     return true;
 }
