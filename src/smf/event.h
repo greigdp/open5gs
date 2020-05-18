@@ -87,7 +87,6 @@ typedef struct smf_event_s {
 } smf_event_t;
 
 void smf_event_init(void);
-void smf_event_term(void);
 void smf_event_final(void);
 
 smf_event_t *smf_event_new(smf_event_e id);

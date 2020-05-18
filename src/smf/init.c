@@ -69,42 +69,32 @@ int smf_initialize()
 
 static ogs_timer_t *t_termination_holding = NULL;
 
-static void timer_cb(void *data)
-{
-}
-
-static void smf_event_term2(void)
+static void event_termination(void)
 {
     ogs_sbi_nf_instance_t *nf_instance = NULL;
 
+    /* Sending NF Instance De-registeration to NRF */
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
         smf_nf_fsm_fini(nf_instance);
 
-    t_termination_holding = ogs_timer_add(
-            smf_self()->timer_mgr, timer_cb, NULL);
+    t_termination_holding = ogs_timer_add(smf_self()->timer_mgr, NULL, NULL);
     ogs_assert(t_termination_holding);
-    ogs_timer_start(t_termination_holding, ogs_time_from_msec(300));
+#define TERMINATION_HOLDING_TIME ogs_time_from_msec(300)
+    ogs_timer_start(t_termination_holding, TERMINATION_HOLDING_TIME);
 
     ogs_queue_term(smf_self()->queue);
     ogs_pollset_notify(smf_self()->pollset);
 }
 
-
 void smf_terminate(void)
 {
     if (!initialized) return;
 
-#if 0
-    smf_event_term(); /* Terminate event */
-#else
-    smf_event_term2(); /* Terminate event */
-#endif
+    event_termination();
 
     ogs_thread_destroy(thread);
 
-#if 1
     ogs_timer_delete(t_termination_holding);
-#endif
 
     smf_fd_final();
 
