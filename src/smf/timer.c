@@ -70,6 +70,7 @@ static void timer_send_event(int timer_id, void *data)
     case SMF_TIMER_PFCP_ASSOCIATION:
     case SMF_TIMER_PFCP_HEARTBEAT:
         e = smf_event_new(SMF_EVT_N4_TIMER);
+        ogs_assert(e);
         e->timer_id = timer_id;
         e->pfcp_node = data;
         break;
@@ -79,6 +80,7 @@ static void timer_send_event(int timer_id, void *data)
     case SMF_TIMER_NF_INSTANCE_VALIDITY:
     case SMF_TIMER_SUBSCRIPTION_VALIDITY:
         e = smf_event_new(SMF_EVT_SBI_TIMER);
+        ogs_assert(e);
         e->timer_id = timer_id;
         e->sbi.data = data;
         break;
@@ -90,7 +92,8 @@ static void timer_send_event(int timer_id, void *data)
 
     rv = ogs_queue_push(smf_self()->queue, e);
     if (rv != OGS_OK) {
-        ogs_warn("ogs_queue_push() failed:%d", (int)rv);
+        ogs_warn("ogs_queue_push() failed [%d] in %s",
+                (int)rv, smf_timer_get_name(e->timer_id));
         smf_event_free(e);
     }
 }

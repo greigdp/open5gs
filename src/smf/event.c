@@ -35,10 +35,22 @@ void smf_event_init(void)
     ogs_assert(smf_self()->pollset);
 }
 
-void smf_event_term(void)
+static ogs_timer_t *t_termination_holding = NULL;
+
+static void smf_timer_termination_holding(void *data)
 {
+    ogs_fatal("timer");
+    ogs_timer_delete(t_termination_holding);
     ogs_queue_term(smf_self()->queue);
     ogs_pollset_notify(smf_self()->pollset);
+}
+
+void smf_event_term(void)
+{
+    t_termination_holding = ogs_timer_add(
+            smf_self()->timer_mgr, smf_timer_termination_holding, NULL);
+    ogs_assert(t_termination_holding);
+    ogs_timer_start(t_termination_holding, ogs_time_from_sec(2));
 }
 
 void smf_event_final(void)
