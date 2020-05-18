@@ -102,7 +102,9 @@ void smf_terminate(void)
 
     ogs_thread_destroy(thread);
 
+#if 1
     ogs_timer_delete(t_termination_holding);
+#endif
 
     smf_fd_final();
 
@@ -118,8 +120,8 @@ void smf_terminate(void)
 
 static void smf_main(void *data)
 {
-    int rv;
     ogs_fsm_t smf_sm;
+    int rv;
 
     ogs_fsm_create(&smf_sm, smf_state_initial, smf_state_final);
     ogs_fsm_init(&smf_sm, 0);
@@ -158,8 +160,8 @@ static void smf_main(void *data)
             smf_event_free(e);
         }
     }
-
 done:
+
     ogs_fsm_fini(&smf_sm, 0);
     ogs_fsm_delete(&smf_sm);
 }
