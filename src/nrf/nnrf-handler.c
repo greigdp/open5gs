@@ -257,10 +257,11 @@ bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
 
     links->self = ogs_sbi_server_uri(server,
             recvmsg->h.service.name, recvmsg->h.api.version,
-            recvmsg->h.resource.name, recvmsg->h.resource.id);
+            recvmsg->h.resource.name, NULL);
 
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
-        OpenAPI_list_add(links->items, ogs_strdup(nf_instance->id));
+        OpenAPI_list_add(links->items,
+            ogs_msprintf("%s/%s", links->self, nf_instance->id));
     }
 
     ogs_assert(links->self);
