@@ -271,8 +271,10 @@ static char *build_content(ogs_sbi_message_t *message)
                 message->NotificationData);
         ogs_assert(item);
     } else if (message->SearchResult) {
-        item = OpenAPI_search_result_convertToJSON(
-                message->SearchResult);
+        item = OpenAPI_search_result_convertToJSON(message->SearchResult);
+        ogs_assert(item);
+    } else if (message->links) {
+        item = ogs_sbi_links_convertToJSON(message->links);
         ogs_assert(item);
     }
 

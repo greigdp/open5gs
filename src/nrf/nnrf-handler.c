@@ -236,6 +236,46 @@ bool nrf_nnrf_handle_nf_status_unsubscribe(ogs_sbi_server_t *server,
     return true;
 }
 
+bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
+        ogs_sbi_session_t *session, ogs_sbi_message_t *recvmsg)
+{
+    ogs_sbi_message_t sendmsg;
+    ogs_sbi_response_t *response = NULL;
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    ogs_sbi_links_t *links = NULL;
+    OpenAPI_list_t *items = NULL;
+    OpenAPI_lnode_t *node = NULL;
+
+    ogs_assert(session);
+    ogs_assert(recvmsg);
+
+    links = ogs_calloc(1, sizeof(*links));
+    items = OpenAPI_list_create();
+
+    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
+        OpenAPI_list_add(items, ogs_strdup(nf_instance->id));
+    }
+
+    links->items = items;
+
+    memset(&sendmsg, 0, sizeof(sendmsg));
+    sendmsg.links = links;
+
+    response = ogs_sbi_build_response(&sendmsg);
+    ogs_assert(response);
+    ogs_sbi_server_send_response(session, response, OGS_SBI_HTTP_STATUS_OK);
+
+    OpenAPI_list_for_each(links->items, node) {
+        if (!node->data) continue;
+        ogs_free(node->data);
+    }
+    OpenAPI_list_free(links->items);
+    ogs_free(links);
+
+    return true;
+}
+
 bool nrf_nnrf_handle_nf_discover(ogs_sbi_server_t *server,
         ogs_sbi_session_t *session, ogs_sbi_message_t *recvmsg)
 {

@@ -18,6 +18,8 @@
 subdir('openapi')
 
 libsbi_sources = files('''
+    custom/links.c
+
     yuarel.c
     conv.c
     message.c

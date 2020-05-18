@@ -94,47 +94,55 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
 
             SWITCH(message.h.resource.name)
             CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
+                SWITCH(message.h.method)
+                CASE(OGS_SBI_HTTP_METHOD_GET)
+                    nrf_nnrf_handle_nf_retrieval(
+                            server, session, &message);
+                    break;
 
-                nf_instance = ogs_sbi_nf_instance_find(message.h.resource.id);
-                if (!nf_instance) {
-                    SWITCH(message.h.method)
-                    CASE(OGS_SBI_HTTP_METHOD_PUT)
-                        nf_instance = ogs_sbi_nf_instance_add(
-                                message.h.resource.id);
-                        ogs_assert(nf_instance);
-                        nrf_nf_fsm_init(nf_instance);
-                        break;
-                    DEFAULT
-                        ogs_error("Not found [%s]", message.h.resource.id);
-                        ogs_sbi_server_send_error(session,
+                DEFAULT
+                    nf_instance = ogs_sbi_nf_instance_find(
+                            message.h.resource.id);
+                    if (!nf_instance) {
+                        SWITCH(message.h.method)
+                        CASE(OGS_SBI_HTTP_METHOD_PUT)
+                            nf_instance = ogs_sbi_nf_instance_add(
+                                    message.h.resource.id);
+                            ogs_assert(nf_instance);
+                            nrf_nf_fsm_init(nf_instance);
+                            break;
+                        DEFAULT
+                            ogs_error("Not found [%s]", message.h.resource.id);
+                            ogs_sbi_server_send_error(session,
                                 OGS_SBI_HTTP_STATUS_NOT_FOUND,
                                 &message, "Not found", message.h.resource.id);
-                    END
-                }
-
-                if (nf_instance) {
-                    e->nf_instance = nf_instance;
-                    ogs_assert(OGS_FSM_STATE(&nf_instance->sm));
-
-                    e->sbi.message = &message;
-                    ogs_fsm_dispatch(&nf_instance->sm, e);
-                    if (OGS_FSM_CHECK(&nf_instance->sm,
-                                nrf_nf_state_de_registered)) {
-                        nrf_nf_fsm_fini(nf_instance);
-                        ogs_sbi_nf_instance_remove(nf_instance);
-
-                        /* FIXME : Remove unnecessary Client */
-                    } else if (OGS_FSM_CHECK(&nf_instance->sm,
-                                nrf_nf_state_exception)) {
-                        ogs_error("State machine exception");
-                        ogs_sbi_message_free(&message);
-
-                        nrf_nf_fsm_fini(nf_instance);
-                        ogs_sbi_nf_instance_remove(nf_instance);
-
-                        /* FIXME : Remove unnecessary Client */
+                        END
                     }
-                }
+
+                    if (nf_instance) {
+                        e->nf_instance = nf_instance;
+                        ogs_assert(OGS_FSM_STATE(&nf_instance->sm));
+
+                        e->sbi.message = &message;
+                        ogs_fsm_dispatch(&nf_instance->sm, e);
+                        if (OGS_FSM_CHECK(&nf_instance->sm,
+                                    nrf_nf_state_de_registered)) {
+                            nrf_nf_fsm_fini(nf_instance);
+                            ogs_sbi_nf_instance_remove(nf_instance);
+
+                            /* FIXME : Remove unnecessary Client */
+                        } else if (OGS_FSM_CHECK(&nf_instance->sm,
+                                    nrf_nf_state_exception)) {
+                            ogs_error("State machine exception");
+                            ogs_sbi_message_free(&message);
+
+                            nrf_nf_fsm_fini(nf_instance);
+                            ogs_sbi_nf_instance_remove(nf_instance);
+
+                            /* FIXME : Remove unnecessary Client */
+                        }
+                    }
+                END
                 break;
 
             CASE(OGS_SBI_RESOURCE_NAME_SUBSCRIPTIONS)
