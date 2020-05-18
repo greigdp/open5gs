@@ -244,20 +244,23 @@ bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
     ogs_sbi_nf_instance_t *nf_instance = NULL;
 
     ogs_sbi_links_t *links = NULL;
-    OpenAPI_list_t *items = NULL;
     OpenAPI_lnode_t *node = NULL;
 
     ogs_assert(session);
     ogs_assert(recvmsg);
 
     links = ogs_calloc(1, sizeof(*links));
-    items = OpenAPI_list_create();
+    ogs_assert(links);
+
+    links->items = OpenAPI_list_create();
+    ogs_assert(links->items);
 
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
-        OpenAPI_list_add(items, ogs_strdup(nf_instance->id));
+        OpenAPI_list_add(links->items, ogs_strdup(nf_instance->id));
     }
 
-    links->items = items;
+    links->self = ogs_strdup("asdklfjalskdfasdf");
+    ogs_assert(links->self);
 
     memset(&sendmsg, 0, sizeof(sendmsg));
     sendmsg.links = links;
@@ -271,6 +274,7 @@ bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
         ogs_free(node->data);
     }
     OpenAPI_list_free(links->items);
+    ogs_free(links->self);
     ogs_free(links);
 
     return true;

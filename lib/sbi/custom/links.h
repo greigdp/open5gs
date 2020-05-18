@@ -19,7 +19,7 @@ extern "C" {
 typedef struct ogs_sbi_links_s ogs_sbi_links_t;
 typedef struct ogs_sbi_links_s {
     OpenAPI_list_t *items;
-    OpenAPI_map_t *self;
+    char *self;
 } ogs_sbi_links_t;
 
 cJSON *ogs_sbi_links_convertToJSON(ogs_sbi_links_t *links);
