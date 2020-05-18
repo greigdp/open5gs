@@ -35,12 +35,6 @@ void nrf_event_init(void)
     ogs_assert(nrf_self()->pollset);
 }
 
-void nrf_event_term(void)
-{
-    ogs_queue_term(nrf_self()->queue);
-    ogs_pollset_notify(nrf_self()->pollset);
-}
-
 void nrf_event_final(void)
 {
     if (nrf_self()->pollset)

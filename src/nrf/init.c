@@ -49,13 +49,33 @@ int nrf_initialize()
     return OGS_OK;
 }
 
+static ogs_timer_t *t_termination_holding = NULL;
+
+static void event_termination(void)
+{
+    /*
+     * Add business-login during Daemon termination
+     */
+
+    /* Start holding timer */
+    t_termination_holding = ogs_timer_add(nrf_self()->timer_mgr, NULL, NULL);
+    ogs_assert(t_termination_holding);
+#define TERMINATION_HOLDING_TIME ogs_time_from_msec(300)
+    ogs_timer_start(t_termination_holding, TERMINATION_HOLDING_TIME);
+
+    /* Sending termination event to the queue */
+    ogs_queue_term(nrf_self()->queue);
+    ogs_pollset_notify(nrf_self()->pollset);
+}
+
 void nrf_terminate(void)
 {
     if (!initialized) return;
 
-    nrf_event_term(); /* Termniate event */
-
+    /* Daemon terminating */
+    event_termination();
     ogs_thread_destroy(thread);
+    ogs_timer_delete(t_termination_holding);
 
     nrf_context_final();
     ogs_sbi_context_final();

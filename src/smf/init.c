@@ -77,11 +77,13 @@ static void event_termination(void)
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
         smf_nf_fsm_fini(nf_instance);
 
+    /* Starting holding timer */
     t_termination_holding = ogs_timer_add(smf_self()->timer_mgr, NULL, NULL);
     ogs_assert(t_termination_holding);
 #define TERMINATION_HOLDING_TIME ogs_time_from_msec(300)
     ogs_timer_start(t_termination_holding, TERMINATION_HOLDING_TIME);
 
+    /* Sending termination event to the queue */
     ogs_queue_term(smf_self()->queue);
     ogs_pollset_notify(smf_self()->pollset);
 }
@@ -90,10 +92,9 @@ void smf_terminate(void)
 {
     if (!initialized) return;
 
+    /* Daemon terminating */
     event_termination();
-
     ogs_thread_destroy(thread);
-
     ogs_timer_delete(t_termination_holding);
 
     smf_fd_final();

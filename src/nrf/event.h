@@ -67,7 +67,6 @@ typedef struct nrf_event_s {
 } nrf_event_t;
 
 void nrf_event_init(void);
-void nrf_event_term(void);
 void nrf_event_final(void);
 
 nrf_event_t *nrf_event_new(nrf_event_e id);
