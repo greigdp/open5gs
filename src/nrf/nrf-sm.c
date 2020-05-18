@@ -114,6 +114,8 @@ void nrf_state_operational(ogs_fsm_t *s, nrf_event_t *e)
 
                 if (nf_instance) {
                     e->nf_instance = nf_instance;
+                    ogs_assert(OGS_FSM_STATE(&nf_instance->sm));
+
                     e->sbi.message = &message;
                     ogs_fsm_dispatch(&nf_instance->sm, e);
                     if (OGS_FSM_CHECK(&nf_instance->sm,

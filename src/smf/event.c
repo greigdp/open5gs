@@ -47,7 +47,7 @@ void smf_event_final(void)
     ogs_pool_final(&pool);
 }
 
-#if 1
+#if 0
 static ogs_timer_t *t_termination_holding = NULL;
 
 static void smf_timer_termination_holding(void *data)

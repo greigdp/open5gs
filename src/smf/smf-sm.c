@@ -343,13 +343,13 @@ void smf_state_operational(ogs_fsm_t *s, smf_event_t *e)
             CASE(OGS_SBI_RESOURCE_NAME_NF_INSTANCES)
                 nf_instance = e->sbi.data;
                 ogs_assert(nf_instance);
+                ogs_assert(OGS_FSM_STATE(&nf_instance->sm));
+
                 e->sbi.message = &sbi_message;
                 ogs_fsm_dispatch(&nf_instance->sm, e);
 
                 if (OGS_FSM_CHECK(&nf_instance->sm, smf_nf_state_exception)) {
                     ogs_error("State machine exception");
-                    ogs_sbi_message_free(&sbi_message);
-                    ogs_sbi_response_free(sbi_response);
                 }
                 break;
 
