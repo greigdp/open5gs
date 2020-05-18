@@ -255,11 +255,14 @@ bool nrf_nnrf_handle_nf_retrieval(ogs_sbi_server_t *server,
     links->items = OpenAPI_list_create();
     ogs_assert(links->items);
 
+    links->self = ogs_sbi_server_uri(server,
+            recvmsg->h.service.name, recvmsg->h.api.version,
+            recvmsg->h.resource.name, recvmsg->h.resource.id);
+
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
         OpenAPI_list_add(links->items, ogs_strdup(nf_instance->id));
     }
 
-    links->self = ogs_strdup("asdklfjalskdfasdf");
     ogs_assert(links->self);
 
     memset(&sendmsg, 0, sizeof(sendmsg));

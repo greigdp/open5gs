@@ -32,11 +32,11 @@ typedef struct ogs_sbi_server_s ogs_sbi_server_t;
 typedef struct ogs_sbi_client_s ogs_sbi_client_t;
 
 char *ogs_sbi_server_uri(ogs_sbi_server_t *server,
-    const char *api_name, const char *api_version,
+    const char *service_name, const char *api_version,
     const char *resource_name, const char *resource_id);
 
 char *ogs_sbi_client_uri(ogs_sbi_client_t *client,
-    const char *api_name, const char *api_version,
+    const char *service_name, const char *api_version,
     const char *resource_name, const char *resource_id);
 
 char *ogs_sbi_parse_url(char *url, const char *delim, char **saveptr);
