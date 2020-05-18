@@ -22,6 +22,7 @@
 
 static ogs_thread_t *thread;
 static void smf_main(void *data);
+static ogs_fsm_t smf_sm;
 
 static int initialized = 0;
 
@@ -59,12 +60,37 @@ int smf_initialize()
     rv = smf_fd_init();
     if (rv != 0) return OGS_ERROR;
 
+    ogs_fsm_create(&smf_sm, smf_state_initial, smf_state_final);
+    ogs_fsm_init(&smf_sm, 0);
+
     thread = ogs_thread_create(smf_main, NULL);
     if (!thread) return OGS_ERROR;
 
     initialized = 1;
 
     return OGS_OK;
+}
+
+static ogs_timer_t *t_termination_holding = NULL;
+
+static void smf_timer_termination_holding(void *data)
+{
+    ogs_timer_delete(t_termination_holding);
+    ogs_queue_term(smf_self()->queue);
+    ogs_pollset_notify(smf_self()->pollset);
+}
+
+static void smf_event_term2(void)
+{
+    ogs_sbi_nf_instance_t *nf_instance = NULL;
+
+    ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance)
+        smf_nf_fsm_fini(nf_instance);
+
+    t_termination_holding = ogs_timer_add(
+            smf_self()->timer_mgr, smf_timer_termination_holding, NULL);
+    ogs_assert(t_termination_holding);
+    ogs_timer_start(t_termination_holding, ogs_time_from_msec(300));
 }
 
 void smf_terminate(void)
@@ -74,6 +100,9 @@ void smf_terminate(void)
     smf_event_term(); /* Terminate event */
 
     ogs_thread_destroy(thread);
+
+    ogs_fsm_fini(&smf_sm, 0);
+    ogs_fsm_delete(&smf_sm);
 
     smf_fd_final();
 
@@ -89,11 +118,7 @@ void smf_terminate(void)
 
 static void smf_main(void *data)
 {
-    ogs_fsm_t smf_sm;
     int rv;
-
-    ogs_fsm_create(&smf_sm, smf_state_initial, smf_state_final);
-    ogs_fsm_init(&smf_sm, 0);
 
     for ( ;; ) {
         ogs_pollset_poll(smf_self()->pollset,
@@ -110,7 +135,7 @@ static void smf_main(void *data)
             ogs_assert(rv != OGS_ERROR);
 
             if (rv == OGS_DONE)
-                goto done;
+                return;
 
             if (rv == OGS_RETRY)
                 break;
@@ -130,7 +155,7 @@ static void smf_main(void *data)
             ogs_assert(rv != OGS_ERROR);
 
             if (rv == OGS_DONE)
-                goto done;
+                return;
 
             if (rv == OGS_RETRY)
                 break;
@@ -140,8 +165,4 @@ static void smf_main(void *data)
             smf_event_free(e);
         }
     }
-done:
-
-    ogs_fsm_fini(&smf_sm, 0);
-    ogs_fsm_delete(&smf_sm);
 }
