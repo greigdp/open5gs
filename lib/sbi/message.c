@@ -179,17 +179,27 @@ ogs_sbi_request_t *ogs_sbi_build_request(ogs_sbi_message_t *message)
     }
 
     /* URL Param */
+    if (message->param.nf_type) {
+        char *v = OpenAPI_nf_type_ToString(message->param.nf_type);
+        ogs_assert(v);
+        ogs_sbi_header_set(request->http.params,
+                OGS_SBI_PARAM_REQUESTER_NF_TYPE, v);
+    }
+    if (message->param.requester_nf_type) {
+        char *v = OpenAPI_nf_type_ToString(message->param.requester_nf_type);
+        ogs_assert(v);
+        ogs_sbi_header_set(request->http.params, OGS_SBI_PARAM_NF_TYPE, v);
+    }
     if (message->param.target_nf_type) {
         char *v = OpenAPI_nf_type_ToString(message->param.target_nf_type);
         ogs_assert(v);
         ogs_sbi_header_set(request->http.params,
                 OGS_SBI_PARAM_TARGET_NF_TYPE, v);
     }
-    if (message->param.requester_nf_type) {
-        char *v = OpenAPI_nf_type_ToString(message->param.requester_nf_type);
+    if (message->param.limit) {
+        char *v = ogs_msprintf("%d", message->param.limit);
         ogs_assert(v);
-        ogs_sbi_header_set(request->http.params,
-                OGS_SBI_PARAM_REQUESTER_NF_TYPE, v);
+        ogs_sbi_header_set(request->http.params, OGS_SBI_PARAM_LIMIT, v);
     }
 
     /* HTTP Message */
@@ -308,13 +318,20 @@ int ogs_sbi_parse_request(
 
     for (hi = ogs_hash_first(request->http.params);
             hi; hi = ogs_hash_next(hi)) {
-        if (!strcmp(ogs_hash_this_key(hi), OGS_SBI_PARAM_TARGET_NF_TYPE)) {
+        if (!strcmp(ogs_hash_this_key(hi), OGS_SBI_PARAM_NF_TYPE)) {
+            message->param.nf_type =
+                OpenAPI_nf_type_FromString(ogs_hash_this_val(hi));
+        } else if (!strcmp(ogs_hash_this_key(hi),
+                    OGS_SBI_PARAM_TARGET_NF_TYPE)) {
             message->param.target_nf_type =
                 OpenAPI_nf_type_FromString(ogs_hash_this_val(hi));
         } else if (!strcmp(ogs_hash_this_key(hi),
                     OGS_SBI_PARAM_REQUESTER_NF_TYPE)) {
             message->param.requester_nf_type =
                 OpenAPI_nf_type_FromString(ogs_hash_this_val(hi));
+        } else if (!strcmp(ogs_hash_this_key(hi),
+                    OGS_SBI_PARAM_LIMIT)) {
+            message->param.limit = atoi(ogs_hash_this_val(hi));
         }
     }
 

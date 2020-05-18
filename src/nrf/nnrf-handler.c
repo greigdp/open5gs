@@ -242,6 +242,7 @@ bool nrf_nnrf_handle_nf_list_retrieval(ogs_sbi_server_t *server,
     ogs_sbi_message_t sendmsg;
     ogs_sbi_response_t *response = NULL;
     ogs_sbi_nf_instance_t *nf_instance = NULL;
+    int i = 0;
 
     ogs_sbi_links_t *links = NULL;
     OpenAPI_lnode_t *node = NULL;
@@ -260,8 +261,17 @@ bool nrf_nnrf_handle_nf_list_retrieval(ogs_sbi_server_t *server,
             recvmsg->h.resource.name, NULL);
 
     ogs_list_for_each(&ogs_sbi_self()->nf_instance_list, nf_instance) {
+
+        if (recvmsg->param.nf_type &&
+                recvmsg->param.nf_type != nf_instance->nf_type)
+            continue;
+        if (recvmsg->param.limit && i >= recvmsg->param.limit)
+            break;
+
         OpenAPI_list_add(links->items,
             ogs_msprintf("%s/%s", links->self, nf_instance->id));
+
+        i++;
     }
 
     ogs_assert(links->self);

@@ -86,8 +86,10 @@ extern "C" {
 #define OGS_SBI_RESOURCE_NAME_SUBSCRIPTIONS         "subscriptions"
 #define OGS_SBI_RESOURCE_NAME_NF_STATUS_NOTIFY      "nf-status-notify"
 
+#define OGS_SBI_PARAM_NF_TYPE                       "nf-type"
 #define OGS_SBI_PARAM_TARGET_NF_TYPE                "target-nf-type"
 #define OGS_SBI_PARAM_REQUESTER_NF_TYPE             "requester-nf-type"
+#define OGS_SBI_PARAM_LIMIT                         "limit"
 
 #define OGS_SBI_ACCEPT_ENCODING                     "Accept-Encoding"
 #define OGS_SBI_CONTENT_TYPE                        "Content-Type"
@@ -130,6 +132,8 @@ typedef struct ogs_sbi_message_s {
     struct {
         OpenAPI_nf_type_e target_nf_type;
         OpenAPI_nf_type_e requester_nf_type;
+        OpenAPI_nf_type_e nf_type;
+        int limit;
     } param;
 
     int res_status;
